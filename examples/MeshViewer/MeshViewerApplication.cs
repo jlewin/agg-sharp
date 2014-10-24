@@ -141,7 +141,7 @@ namespace MatterHackers.MeshVisualizer
 
 		private void DoOpenFileButton_ButtonClick()
 		{
-			FileDialog.OpenFileDialog(
+			Configuration.FileDialog.OpenFileDialog(
 				new OpenFileDialogParams("3D Mesh Files|*.stl;*.amf"),
 				(openParams) =>
 				{

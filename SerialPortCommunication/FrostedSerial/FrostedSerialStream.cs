@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatterHackers.Agg.PlatformAbstract;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 

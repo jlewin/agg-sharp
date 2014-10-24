@@ -34,6 +34,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using MatterHackers.Agg.PlatformAbstract;
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {

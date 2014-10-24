@@ -47,7 +47,7 @@ namespace MatterHackers.Agg.UI
 		private void controlToHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs windowsKeyEvent)
 		{
 			MatterHackers.Agg.UI.KeyEventArgs aggKeyEvent;
-			if (OsInformation.OperatingSystem == OSType.Mac
+			if (Configuration.OsInformation.OperatingSystem == OSType.Mac
 				&& (windowsKeyEvent.KeyData & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt)
 			{
 				aggKeyEvent = new MatterHackers.Agg.UI.KeyEventArgs((MatterHackers.Agg.UI.Keys)(System.Windows.Forms.Keys.Control | (windowsKeyEvent.KeyData & ~System.Windows.Forms.Keys.Alt)));

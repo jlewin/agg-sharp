@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2014, Lars Brubaker
 All rights reserved.
 
@@ -33,58 +33,44 @@ using System.IO;
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-	public static class ImageIO
+	public class ImageIOProvider
 	{
-		private static ImageIOPlugin imageIOPlugin = null;
-
-		private static ImageIOPlugin AvailableImageIOPlugin
+		public virtual bool LoadImageData(String pathToGifFile, ImageSequence destImageSequence)
 		{
-			get
+			if (File.Exists(pathToGifFile))
 			{
-				if (imageIOPlugin == null)
+				using (Stream stream = new StreamReader(pathToGifFile).BaseStream)
 				{
-					string pluginPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-					PluginFinder<ImageIOPlugin> imageIOPlugins = new PluginFinder<ImageIOPlugin>(pluginPath);
-					if (imageIOPlugins.Plugins.Count != 1)
-					{
-						throw new Exception(string.Format("Did not find any ImageIOPlugins in Plugin path ({0}.", pluginPath));
-					}
-
-					imageIOPlugin = imageIOPlugins.Plugins[0];
+					return LoadImageData(stream, destImageSequence);
 				}
-
-				return imageIOPlugin;
 			}
+
+			return false;
 		}
 
-		static public bool LoadImageData(String pathToGifFile, ImageSequence destImageSequence)
+		public virtual bool LoadImageData(Stream stream, ImageSequence destImageSequence)
 		{
-			return AvailableImageIOPlugin.LoadImageData(pathToGifFile, destImageSequence);
+			return false;
 		}
 
-		static public bool LoadImageData(Stream steam, ImageSequence destImageSequence)
+		public virtual bool LoadImageData(String filename, ImageBuffer destImage)
 		{
-			return AvailableImageIOPlugin.LoadImageData(steam, destImageSequence);
+			throw new Exception("You must implement this in an inherited class.");
 		}
 
-		static public bool LoadImageData(String fileName, ImageBuffer destImage)
+		public virtual bool LoadImageData(Stream stream, ImageBuffer destImage)
 		{
-			return AvailableImageIOPlugin.LoadImageData(fileName, destImage);
+			return false;
 		}
 
-		static public bool LoadImageData(Stream stream, ImageBuffer destImage)
+		public virtual bool LoadImageData(String filename, ImageBufferFloat destImage)
 		{
-			return AvailableImageIOPlugin.LoadImageData(stream, destImage);
+			throw new Exception("You must implement this in an inherited class.");
 		}
 
-		static public bool LoadImageData(String filename, ImageBufferFloat destImage)
+		public virtual bool SaveImageData(String filename, IImageByte sourceImage)
 		{
-			return AvailableImageIOPlugin.LoadImageData(filename, destImage);
-		}
-
-		static public bool SaveImageData(String filename, IImageByte sourceImage)
-		{
-			return AvailableImageIOPlugin.SaveImageData(filename, sourceImage);
+			throw new Exception("You must implement this in an inherited class.");
 		}
 	}
 }

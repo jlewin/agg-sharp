@@ -37,7 +37,7 @@ using System.IO;
 
 namespace MatterHackers.Agg.Image
 {
-	public class ImageIOWindowsPlugin : ImageIOPlugin
+	public class ImageIOWindowsPlugin : ImageIOProvider
 	{
 		public override bool LoadImageData(Stream stream, ImageSequence destImageSequence)
 		{

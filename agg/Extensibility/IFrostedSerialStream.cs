@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MatterHackers.SerialPortCommunication.FrostedSerial
+namespace MatterHackers.Agg.PlatformAbstract
 {
 	internal interface IFrostedSerialStream : IDisposable
 	{

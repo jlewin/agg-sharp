@@ -28,6 +28,7 @@ either expressed or implied, of the FreeBSD Project.
 */
 
 using System;
+using MatterHackers.Agg.PlatformAbstract;
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {

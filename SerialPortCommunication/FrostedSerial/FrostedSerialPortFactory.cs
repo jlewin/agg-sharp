@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {
-	public class FrostedSerialPortFactory
+	public class FrostedSerialPortFactory : IFrostedSerialPortFactory
 	{
 		[DllImport("SetSerial", SetLastError = true)]
 		private static extern int set_baud(string portName, int baud_rate);
@@ -84,6 +84,8 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                 }
             }
 		}
+		static IFrostedSerialPortFactory instance = null;
+		public static IFrostedSerialPortFactory Instance
 
 		virtual protected string GetDriverType()
 		{
@@ -96,7 +98,7 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 		//Windows-only function
 		public virtual bool SerialPortAlreadyOpen(string portName)
 		{
-			if (OsInformation.OperatingSystem == OSType.Windows)
+			if (Configuration.OsInformation.OperatingSystem == OSType.Windows)
 			{
 				const int dwFlagsAndAttributes = 0x40000000;
 				const int GENERIC_READ = unchecked((int)0x80000000);

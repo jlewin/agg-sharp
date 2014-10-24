@@ -53,7 +53,7 @@ namespace MatterHackers.PolygonMesh
 
 		public void RenderToPng(string pngFileName)
 		{
-			ImageIO.SaveImageData(pngFileName, CreateImage(pngFileName));
+			Configuration.ImageIO.SaveImageData(pngFileName, CreateImage(pngFileName));
 		}
 
 		public ImageBuffer CreateImage(string pngFileName)

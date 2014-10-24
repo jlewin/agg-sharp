@@ -164,14 +164,11 @@
     <Compile Include="CheckBox\CheckBoxViewText.cs" />
     <Compile Include="Clipboard\Clipboard.cs" />
     <Compile Include="DrawEventArgs.cs" />
+    <Compile Include="Extensibility\IApplicationPlugin.cs" />
+    <Compile Include="Extensibility\PluginManager.cs" />
     <Compile Include="InvalidateEventArgs.cs" />
     <Compile Include="DefaultViewFactory.cs" />
     <Compile Include="DiagnosticsWidget.cs" />
-    <Compile Include="FileDialogs\FileDialog.cs" />
-    <Compile Include="FileDialogs\FileDialogParams.cs" />
-    <Compile Include="FileDialogs\OpenFileDialogPrams.cs" />
-    <Compile Include="FileDialogs\SaveFileDialogParams.cs" />
-    <Compile Include="FileDialogs\SelectFolderDialogParams.cs" />
     <Compile Include="FileDropEventArgs.cs" />
     <Compile Include="FlowLayoutWidget.cs" />
     <Compile Include="GridControl.cs" />
@@ -270,5 +267,4 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
 </Project>

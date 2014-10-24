@@ -31,6 +31,7 @@ using MatterHackers.VectorMath;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MatterHackers.Agg.PlatformAbstract;
 
 namespace MatterHackers.Agg.UI
 {
@@ -120,13 +121,13 @@ namespace MatterHackers.Agg.UI
             ToolTipManager = new ToolTipManager(this);
 			if (globalSystemWindowCreator == null)
 			{
-				string pluginPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				PluginFinder<SystemWindowCreatorPlugin> systemWindowCreatorFinder = new PluginFinder<SystemWindowCreatorPlugin>(pluginPath);
-				if (systemWindowCreatorFinder.Plugins.Count != 1)
-				{
-					throw new Exception(string.Format("Did not find any SystemWindowCreators in Plugin path ({0}.", pluginPath));
-				}
-				globalSystemWindowCreator = systemWindowCreatorFinder.Plugins[0];
+				// TODO: This needs to driven by config or compile time values !!!!!!!!!!!!!!! NOT HARDCODED !!!!!!!!!!!!!!!!!!!!1
+			    var typeString = "MatterHackers.Agg.SystemWindowCreator_WindowsForms, agg_platform_win32";
+                globalSystemWindowCreator = Configuration.LoadProviderFromAssembly(typeString) as SystemWindowCreatorPlugin;
+                if (globalSystemWindowCreator == null)
+                {
+                    throw new Exception(string.Format("Unable to load the Window provider"));
+                }
 			}
 
             allOpenSystemWindows.Add(this);

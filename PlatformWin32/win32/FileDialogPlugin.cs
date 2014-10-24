@@ -1,23 +1,36 @@
+﻿using System;
+using System.IO;
 ﻿using MatterHackers.Agg.UI;
 using System;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+
+using MatterHackers.Agg.PlatformAbstract;
+using System.Collections.Generic;
 
 namespace MatterHackers.Agg.WindowsFileDialogs
 {
-	public class FileDialogPlugin : FileDialogCreator
-	{
+    public class FileDialogPlugin : FileDialogProvider
+    {
 		// Resolve not needed on non-Mac platforms
 		public override string ResolveFilePath(string path)
 		{
 			return path;
 		}
 
-		public override bool OpenFileDialog(OpenFileDialogParams openParams, OpenFileDialogDelegate callback)
+		// TODO: Investigate if this signature is used and/or why it's missing for the lastest
+		public override IEnumerable<string> ResolveFilePaths(IEnumerable<string> filePaths)
 		{
+			// Only perform Mac file reference resoltion when the string starts with the expected token
+			return filePaths.Select(path => !path.StartsWith("/.file") ? path : this.ResolveFilePath(path));
+		}
+
+		public override bool OpenFileDialog(OpenFileDialogParams openParams, OpenFileDialogDelegate callback)
 			WidgetForWindowsFormsAbstract.MainWindowsFormsWindow.ShowingSystemDialog = true;
 			openParams.FileName = "";
 			openParams.FileNames = null;
-
 			OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
 			openFileDialog1.InitialDirectory = openParams.InitialDirectory;

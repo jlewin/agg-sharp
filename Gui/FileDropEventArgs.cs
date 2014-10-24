@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatterHackers.Agg.PlatformAbstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace MatterHackers.Agg.UI
 		{
 			this.x = x;
 			this.y = y;
-			this.DroppedFiles = FileDialog.ResolveFilePaths(droppedFiles).ToList();
+			this.DroppedFiles = Configuration.FileDialog.ResolveFilePaths(droppedFiles).ToList();
 		}
 
 		public bool AcceptDrop { get; set; }

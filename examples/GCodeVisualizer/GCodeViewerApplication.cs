@@ -32,6 +32,7 @@ using MatterHackers.Agg.Image;
 using MatterHackers.Agg.UI;
 using MatterHackers.VectorMath;
 using System;
+using MatterHackers.Agg.PlatformAbstract;
 
 /*
  * TODO:
@@ -131,7 +132,7 @@ namespace MatterHackers.GCodeVisualizer
 			UiThread.RunOnIdle(() =>
 				{
 					OpenFileDialogParams openParams = new OpenFileDialogParams("gcode files|*.gcode");
-					FileDialog.OpenFileDialog(openParams, onFileSelected);
+					Configuration.FileDialog.OpenFileDialog(openParams, onFileSelected);
 				});
 		}
 

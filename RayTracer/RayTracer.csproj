@@ -168,6 +168,5 @@
     <Compile Include="Primitive\Shapes\TriangleShape.cs" />
     <Compile Include="Primitive\Transform.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

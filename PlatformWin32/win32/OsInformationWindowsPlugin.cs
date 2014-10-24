@@ -27,13 +27,14 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
 
+using MatterHackers.Agg.PlatformAbstract;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace MatterHackers.Agg.PlatformAbstract
+namespace MatterControl.Agg.PlatformAbstract
 {
-	public class OsInformationWindowsPlugin : OsInformationPlugin
+	public class OsInformationWindowsPlugin : OsInformationProvider
 	{
 		//From Managed.Windows.Forms/XplatUI
 		[DllImport("libc")]
@@ -68,24 +69,30 @@ namespace MatterHackers.Agg.PlatformAbstract
 			return false;
 		}
 
-		public override OSType GetOSType()
-		{
-			if (Path.DirectorySeparatorChar == '\\')
-			{
-				return OSType.Windows;
-			}
-			else if (IsRunningOnMac())
-			{
-				return OSType.Mac;
-			}
-			else if (Environment.OSVersion.Platform == PlatformID.Unix)
-			{
-				return OSType.X11;
-			}
-			else
-			{
-				return OSType.Other;
-			}
-		}
-	}
+        public OsInformationWindowsPlugin()
+        {
+            this.OperatingSystem = GetOSType();
+        }
+
+		// TODO: We compile each application on the appropriate platform and at compile time know, Windows vs Mac vs Linux. Runtime evaluation of the platform seems weird. Do we really ever want a Windows compiled exe to run on Linux or Mac and behave correctly?
+        private OSType GetOSType()
+        {
+            if (Path.DirectorySeparatorChar == '\\')
+            {
+                return OSType.Windows;
+            }
+            else if (IsRunningOnMac())
+            {
+                return OSType.Mac;
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                return OSType.X11;
+            }
+            else
+            {
+                return OSType.Other;
+            }
+        }
+    }
 }

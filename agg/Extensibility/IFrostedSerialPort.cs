@@ -29,7 +29,7 @@ either expressed or implied, of the FreeBSD Project.
 
 using System;
 
-namespace MatterHackers.SerialPortCommunication.FrostedSerial
+namespace MatterHackers.Agg.PlatformAbstract
 {
 	public delegate void SerialDataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e);
 
