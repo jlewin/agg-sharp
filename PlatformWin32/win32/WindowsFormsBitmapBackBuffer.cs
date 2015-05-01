@@ -34,11 +34,11 @@ using System.Drawing.Imaging;
 
 namespace MatterHackers.Agg.UI
 {
-	internal class WindowsFormsBitmapBackBuffer
+	public class WindowsFormsBitmapBackBuffer
 	{
-		internal ImageBuffer backingImageBufferByte;
-		internal ImageBufferFloat backingImageBufferFloat;
-		internal Bitmap windowsBitmap;
+		public ImageBuffer backingImageBufferByte;
+		public ImageBufferFloat backingImageBufferFloat;
+		public Bitmap windowsBitmap;
 
 		private BitmapData bitmapData = null;
 		private bool externallyLocked = false;
@@ -58,7 +58,7 @@ namespace MatterHackers.Agg.UI
 
 		private int numInFunction = 0;
 
-		internal void UpdateHardwareSurface(RectangleInt rect)
+		public void UpdateHardwareSurface(RectangleInt rect)
 		{
 			numInFunction++;
 			if (backingImageBufferByte != null)
@@ -193,7 +193,7 @@ namespace MatterHackers.Agg.UI
 			numInFunction--;
 		}
 
-		internal void Initialize(int width, int height, int bitDepth)
+		public void Initialize(int width, int height, int bitDepth)
 		{
 			if (width > 0 && height > 0)
 			{
