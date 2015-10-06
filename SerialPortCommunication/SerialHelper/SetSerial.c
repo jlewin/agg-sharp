@@ -58,3 +58,11 @@ int set_baud(char *devfile, int baud)
   printf("SetSerial: Reported speed after update %d\n", t.c_ospeed);
   return 0;
 }
+
+int open_serial2 (char *devfile)
+{
+	int fd;
+	fd = open (devfile, O_RDWR | O_NONBLOCK);
+
+	return fd;
+}

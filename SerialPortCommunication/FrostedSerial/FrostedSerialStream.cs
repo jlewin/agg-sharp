@@ -30,11 +30,26 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 		[DllImport("FrostedSerialHelper", SetLastError = true)]
 		private static extern int set_attributes(int fd, int baudRate, Parity parity, int dataBits, StopBits stopBits, Handshake handshake);
 
+		[DllImport("SetSerial", SetLastError = true)]
+		private static extern int open_serial2(string portName, int baud_rate);
+
+		bool doSocatWorkaround = true;
+
 		public FrostedSerialPortStream(string portName, int baudRate, int dataBits, Parity parity, StopBits stopBits,
 				bool dtrEnable, bool rtsEnable, Handshake handshake, int readTimeout, int writeTimeout,
 				int readBufferSize, int writeBufferSize)
 		{
-			fd = open_serial(portName);
+			if (doSocatWorkaround)
+			{
+				fd = open_serial2 (portName);
+			}
+			else
+			{
+				fd = open_serial (portName);
+			}
+
+
+
 			if (fd == -1)
 			{
 				ThrowIOException();
