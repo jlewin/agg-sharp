@@ -170,6 +170,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WebStore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebStore.Designer.cs">
+      <DependentUpon>WebStore.cs</DependentUpon>
+    </Compile>
     <Compile Include="win32\FileSystemStaticData.cs" />
     <Compile Include="win32\OsInformationWindowsPlugin.cs" />
     <Compile Include="win32\HookWindowsInputAndSendToWidget.cs" />
@@ -237,6 +243,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WebStore.resx">
+      <DependentUpon>WebStore.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

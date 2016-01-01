@@ -41,6 +41,8 @@ namespace MatterHackers.Agg.UI
 		public abstract Point2D GetDesktopPosition(SystemWindow systemWindow);
 
 		public abstract void SetDesktopPosition(SystemWindow systemWindow, Point2D position);
+
+		public abstract void ShowWebStore(string storeUrl);
 	}
 
 	public class SystemWindow : GuiWidget

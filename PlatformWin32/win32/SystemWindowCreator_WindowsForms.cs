@@ -27,6 +27,7 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
 
+using agg_platform_win32;
 using MatterHackers.Agg.PlatformAbstract;
 using MatterHackers.Agg.UI;
 using System;
@@ -39,6 +40,14 @@ namespace MatterHackers.Agg
 		private Point2D InitialDesktopPosition = new Point2D();
 
 		IGuiFactory factoryToUse = null;
+
+		public override void ShowWebStore(string storeUrl)
+		{
+			using (var storeForm = new WebStore(storeUrl))
+			{
+				storeForm.ShowDialog();
+			}
+		}
 
 		public override void ShowSystemWindow(SystemWindow systemWindow)
 		{
