@@ -228,13 +228,7 @@ namespace MatterHackers.Agg.UI
 		private bool visible = true;
 		private bool enabled = true;
 
-		private bool selectable = true;
-
-		public bool Selectable
-		{
-			get { return selectable; }
-			set { selectable = value; }
-		}
+		public bool Selectable { get; set; } = true;
 
 		private enum MouseCapturedState { NotCaptured, ChildHasMouseCaptured, ThisHasMouseCaptured };
 
@@ -489,9 +483,9 @@ namespace MatterHackers.Agg.UI
 		public event EventHandler Layout;
 
 		// the event args will be a DrawEventArgs
-		public event DrawEventHandler DrawBefore;
+		public event DrawEventHandler BeforeDraw;
 
-		public event DrawEventHandler DrawAfter;
+		public event DrawEventHandler AfterDraw;
 
 		public event EventHandler<KeyPressEventArgs> KeyPressed;
 
@@ -1323,7 +1317,7 @@ namespace MatterHackers.Agg.UI
 				}
 				if (childToAdd.Parent != null)
 				{
-					throw new Exception("This is alread the child of another widget.");
+					throw new Exception("This is already the child of another widget.");
 				}
 				childToAdd.parent = this;
 				childToAdd.HasBeenClosed = false;
@@ -1799,13 +1793,28 @@ namespace MatterHackers.Agg.UI
 
 		public static int DrawCount;
 
+		protected bool formHasLoaded = false;
+
+		public event EventHandler Load;
+
+		public virtual void OnLoad(EventArgs args)
+		{
+			Load?.Invoke(this, args);
+		}
+
 		public virtual void OnDraw(Graphics2D graphics2D)
 		{
 			//using (new PerformanceTimer("Draw Timer", "Widget Draw"))
 			{
+				if (!formHasLoaded)
+				{
+					OnLoad(null);
+					formHasLoaded = true;
+				}
+
 				DrawCount++;
 
-				DrawBefore?.Invoke(this, new DrawEventArgs(graphics2D));
+				BeforeDraw?.Invoke(this, new DrawEventArgs(graphics2D));
 
 				for (int i = 0; i < Children.Count; i++)
 				{
@@ -1891,7 +1900,7 @@ namespace MatterHackers.Agg.UI
 					}
 				}
 
-				DrawAfter?.Invoke(this, new DrawEventArgs(graphics2D));
+				AfterDraw?.Invoke(this, new DrawEventArgs(graphics2D));
 
 				if (DebugShowBounds)
 				{
@@ -2124,6 +2133,16 @@ namespace MatterHackers.Agg.UI
 			}
 
 			return vectorToTransform;
+		}
+
+		public GuiWidget TopmostParent()
+		{
+			return this.Parents<SystemWindow>().FirstOrDefault() ?? this.Parents<GuiWidget>().Last();
+		}
+
+		public Vector2 TransformFromScreenSpace(Vector2 vectorToTransform)
+		{
+			return this.TransformFromParentSpace(TopmostParent(), vectorToTransform);
 		}
 
 		public RectangleDouble TransformToScreenSpace(RectangleDouble rectangleToTransform)
@@ -2734,17 +2753,61 @@ namespace MatterHackers.Agg.UI
 			}
 		}
 
-		public void FindNamedChildrenRecursive(string nameToSearchFor, List<GuiWidget> foundChildren)
+		public class WidgetAndPosition
 		{
-			if (Name == nameToSearchFor)
+			public Point2D position { get; private set; }
+			public GuiWidget widget { get; private set; }
+			public string name { get; private set; }
+
+			public WidgetAndPosition(GuiWidget widget, Point2D position, string name)
 			{
-				foundChildren.Add(this);
+				this.name = name;
+				this.widget = widget;
+				this.position = position;
+			}
+		}
+
+		public enum SearchType { Exact, Partial };
+
+		public void FindNamedChildrenRecursive(string nameToSearchFor, List<WidgetAndPosition> foundChildren)
+		{
+			FindNamedChildrenRecursive(nameToSearchFor, foundChildren, new RectangleDouble(double.MinValue, double.MinValue, double.MaxValue, double.MaxValue), SearchType.Exact);
+		}
+
+        public virtual void FindNamedChildrenRecursive(string nameToSearchFor, List<WidgetAndPosition> foundChildren, RectangleDouble touchingBounds, SearchType seachType)
+		{
+			bool nameFound = false;
+
+			if (seachType == SearchType.Exact)
+			{
+				if (Name == nameToSearchFor)
+				{
+					nameFound = true;
+				}
+			}
+			else
+			{
+				if (nameToSearchFor == "" 
+					|| Name.Contains(nameToSearchFor))
+				{
+					nameFound = true;
+				}
+			}
+
+			if(nameFound)
+			{
+				if (touchingBounds.IntersectWithRectangle(this.LocalBounds))
+				{
+					foundChildren.Add(new WidgetAndPosition(this, new Point2D(Width / 2, Height / 2), Name));
+				}
 			}
 
 			List<GuiWidget> searchChildren = new List<GuiWidget>(Children);
 			foreach (GuiWidget child in searchChildren)
 			{
-				child.FindNamedChildrenRecursive(nameToSearchFor, foundChildren);
+				RectangleDouble touchingBoundsRelChild = touchingBounds;
+				touchingBoundsRelChild.Offset(-child.OriginRelativeParent);
+				child.FindNamedChildrenRecursive(nameToSearchFor, foundChildren, touchingBoundsRelChild, seachType);
 			}
 		}
 
