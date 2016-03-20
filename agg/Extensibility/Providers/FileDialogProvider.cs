@@ -6,17 +6,11 @@ using System.Text;
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-	public abstract class FileDialogProvider
+	public interface IFileDialogProvider
 	{
-		public delegate void OpenFileDialogDelegate(OpenFileDialogParams openParams);
-		public delegate void SelectFolderDialogDelegate(SelectFolderDialogParams folderParams);
-		public delegate void SaveFileDialogDelegate(SaveFileDialogParams saveParams);
-
-		public abstract bool OpenFileDialog(OpenFileDialogParams openParams, OpenFileDialogDelegate callback);
-		public abstract bool SelectFolderDialog(SelectFolderDialogParams folderParams, SelectFolderDialogDelegate callback);
-
-		public abstract bool SaveFileDialog(SaveFileDialogParams saveParams, SaveFileDialogDelegate callback);
-
-		public abstract string ResolveFilePath(string path);
+		bool OpenFileDialog(OpenFileDialogParams openParams, Action<OpenFileDialogParams> callback);
+		bool SelectFolderDialog(SelectFolderDialogParams folderParams, Action<SelectFolderDialogParams> callback);
+		bool SaveFileDialog(SaveFileDialogParams saveParams, Action<SaveFileDialogParams> callback);
+		string ResolveFilePath(string path);
 	}
 }

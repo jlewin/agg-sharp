@@ -164,8 +164,7 @@
     <Compile Include="CheckBox\CheckBoxViewText.cs" />
     <Compile Include="Clipboard\Clipboard.cs" />
     <Compile Include="DrawEventArgs.cs" />
-    <Compile Include="Extensibility\IApplicationPlugin.cs" />
-    <Compile Include="Extensibility\PluginManager.cs" />
+    <Compile Include="Extensibility\IWidgetPlugin.cs" />
     <Compile Include="InvalidateEventArgs.cs" />
     <Compile Include="DefaultViewFactory.cs" />
     <Compile Include="DiagnosticsWidget.cs" />

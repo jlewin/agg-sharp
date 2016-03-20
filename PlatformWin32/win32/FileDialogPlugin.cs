@@ -9,15 +9,15 @@ using System.Windows.Forms;
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-    public class FileDialogPlugin : FileDialogProvider
+    public class FileDialogPlugin : IFileDialogProvider
     {
 		// Resolve not needed on non-Mac platforms
-		public override string ResolveFilePath(string path)
+		public string ResolveFilePath(string path)
 		{
 			return path;
 		}
 
-		public override bool OpenFileDialog(OpenFileDialogParams openParams, OpenFileDialogDelegate callback)
+		public bool OpenFileDialog(OpenFileDialogParams openParams, Action<OpenFileDialogParams> callback)
 		{
 			WidgetForWindowsFormsAbstract.MainWindowsFormsWindow.ShowingSystemDialog = true;
 			openParams.FileName = "";
@@ -51,7 +51,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			return true;
 		}
 
-		public override bool SelectFolderDialog(SelectFolderDialogParams folderParams, SelectFolderDialogDelegate callback)
+		public bool SelectFolderDialog(SelectFolderDialogParams folderParams, Action<SelectFolderDialogParams> callback)
 		{
 			SelectFolderDialog(ref folderParams);
 			UiThread.RunOnIdle(() =>
@@ -86,7 +86,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			return folderBrowserDialog.SelectedPath;
 		}
 
-		public override bool SaveFileDialog(SaveFileDialogParams saveParams, SaveFileDialogDelegate callback)
+		public bool SaveFileDialog(SaveFileDialogParams saveParams, Action<SaveFileDialogParams> callback)
 		{
 			WidgetForWindowsFormsAbstract.MainWindowsFormsWindow.ShowingSystemDialog = true;
 			SaveFileDialogParams SaveFileDialogDialogParams = saveParams;

@@ -1,9 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using MatterHackers.Agg.UI;
 
 namespace MatterHackers.Agg.Extensibility
 {
@@ -25,10 +23,5 @@ namespace MatterHackers.Agg.Extensibility
 	public interface IApplicationPlugin
 	{
 		PluginInfo MetaData { get; }
-	}
-
-	public interface IWidgetPlugin : IApplicationPlugin
-	{
-		void Initialize(GuiWidget application);
 	}
 }
