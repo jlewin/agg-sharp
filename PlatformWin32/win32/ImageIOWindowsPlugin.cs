@@ -37,9 +37,9 @@ using System.IO;
 
 namespace MatterHackers.Agg.Image
 {
-	public class ImageIOWindowsPlugin : ImageIOProvider
+	public class ImageIOWindowsPlugin : IImageIOProvider
 	{
-		public override bool LoadImageData(Stream stream, ImageSequence destImageSequence)
+		public bool LoadImageData(Stream stream, ImageSequence destImageSequence)
 		{
 			System.Drawing.Image gifImg = System.Drawing.Image.FromStream(stream);
 			if (gifImg != null)
@@ -76,13 +76,13 @@ namespace MatterHackers.Agg.Image
 			return false;
 		}
 
-		public override bool LoadImageData(Stream stream, ImageBuffer destImage)
+		public bool LoadImageData(Stream stream, ImageBuffer destImage)
 		{
 			Bitmap m_WidowsBitmap = new Bitmap(stream);
 			return ConvertBitmapToImage(destImage, m_WidowsBitmap);
 		}
 
-		public override bool LoadImageData(String fileName, ImageBuffer destImage)
+		public bool LoadImageData(String fileName, ImageBuffer destImage)
 		{
 			if (System.IO.File.Exists(fileName))
 			{
@@ -222,7 +222,7 @@ namespace MatterHackers.Agg.Image
 			m_WidowsBitmap.UnlockBits(bitmapData);
 		}
 
-		public override bool SaveImageData(String filename, IImageByte sourceImage)
+		public bool SaveImageData(String filename, IImageByte sourceImage)
 		{
 			if (File.Exists(filename))
 			{
@@ -306,7 +306,7 @@ namespace MatterHackers.Agg.Image
 			return false;
 		}
 
-		public override bool LoadImageData(String filename, ImageBufferFloat destImage)
+		public bool LoadImageData(String filename, ImageBufferFloat destImage)
 		{
 			if (System.IO.File.Exists(filename))
 			{
@@ -347,6 +347,19 @@ namespace MatterHackers.Agg.Image
 					m_WidowsBitmap.UnlockBits(bitmapData);
 
 					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool LoadImageData(String pathToGifFile, ImageSequence destImageSequence)
+		{
+			if (File.Exists(pathToGifFile))
+			{
+				using (Stream stream = new StreamReader(pathToGifFile).BaseStream)
+				{
+					return LoadImageData(stream, destImageSequence);
 				}
 			}
 

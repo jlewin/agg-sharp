@@ -33,44 +33,18 @@ using System.IO;
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-	public class ImageIOProvider
+	public interface IImageIOProvider
 	{
-		public virtual bool LoadImageData(String pathToGifFile, ImageSequence destImageSequence)
-		{
-			if (File.Exists(pathToGifFile))
-			{
-				using (Stream stream = new StreamReader(pathToGifFile).BaseStream)
-				{
-					return LoadImageData(stream, destImageSequence);
-				}
-			}
+		bool LoadImageData(string pathToGifFile, ImageSequence destImageSequence);
 
-			return false;
-		}
+		bool LoadImageData(Stream stream, ImageSequence destImageSequence);
 
-		public virtual bool LoadImageData(Stream stream, ImageSequence destImageSequence)
-		{
-			return false;
-		}
+		bool LoadImageData(string filename, ImageBuffer destImage);
 
-		public virtual bool LoadImageData(String filename, ImageBuffer destImage)
-		{
-			throw new Exception("You must implement this in an inherited class.");
-		}
+		bool LoadImageData(Stream stream, ImageBuffer destImage);
 
-		public virtual bool LoadImageData(Stream stream, ImageBuffer destImage)
-		{
-			return false;
-		}
+		bool LoadImageData(string filename, ImageBufferFloat destImage);
 
-		public virtual bool LoadImageData(String filename, ImageBufferFloat destImage)
-		{
-			throw new Exception("You must implement this in an inherited class.");
-		}
-
-		public virtual bool SaveImageData(String filename, IImageByte sourceImage)
-		{
-			throw new Exception("You must implement this in an inherited class.");
-		}
+		bool SaveImageData(string filename, IImageByte sourceImage);
 	}
 }

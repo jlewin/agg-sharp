@@ -28,7 +28,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			return (type == null) ? null : Activator.CreateInstance(type) as T;
 		}
 
-		public static ImageIOProvider ImageIO { get; }
+		public static IImageIOProvider ImageIO { get; }
 		public static IFileDialogProvider FileDialogs { get; }
 		public static IFrostedSerialPortFactory FrostedSerialPortFactory { get; }
 		public static IStaticData StaticData { get; }
@@ -64,7 +64,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			OperatingSystem = osInformation.OperatingSystem;
 
 			// ImageIO Provider
-			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(providerTypes.ImageIOProvider);
+			ImageIO = LoadProviderFromAssembly<IImageIOProvider>(providerTypes.ImageIOProvider);
 			if (ImageIO == null)
 			{
 				throw new Exception(string.Format("Unable to load the ImageIO provider"));
