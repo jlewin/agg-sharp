@@ -2,7 +2,7 @@
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-	internal interface IFrostedSerialStream : IDisposable
+	public interface IFrostedSerialStream : IDisposable
 	{
 		int Read(byte[] buffer, int offset, int count);
 

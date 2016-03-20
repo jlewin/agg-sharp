@@ -16,7 +16,7 @@ namespace MatterHackers.Agg.PlatformAbstract
         public static object LoadProviderFromAssembly(string typeString)
         {
             var type = Type.GetType(typeString);
-            return Activator.CreateInstance(type);
+            return (type == null) ? null : Activator.CreateInstance(type);
         }
 
         public static ImageIOProvider ImageIO { get; private set; }
@@ -24,11 +24,12 @@ namespace MatterHackers.Agg.PlatformAbstract
         public static FileDialogProvider FileDialogs { get; private set; }
 		public static IFrostedSerialPortFactory FrostedSerialPortFactory { get; private set; }
 
-        static Configuration()
+		static Configuration()
         {
-            // Initialize the OsInformation Provider
-            string typeString;
-            typeString = "MatterControl.Agg.PlatformAbstract.OsInformationWindowsPlugin, agg_platform_win32, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
+			string typeString;
+
+			// Initialize the OsInformation Provider
+			typeString = "MatterControl.Agg.PlatformAbstract.OsInformationWindowsPlugin, agg_platform_win32, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
             OsInformation = LoadProviderFromAssembly(typeString) as OsInformationProvider;
             if (OsInformation == null)
             {
@@ -44,7 +45,7 @@ namespace MatterHackers.Agg.PlatformAbstract
             }
 
             // Initialize the FileDialog Provider
-            typeString = "MatterHackers.Agg.WindowsFileDialogs.FileDialogPlugin, agg_platform_win32, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
+            typeString = "MatterHackers.Agg.PlatformAbstract.FileDialogPlugin, agg_platform_win32, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
             FileDialogs = LoadProviderFromAssembly(typeString) as FileDialogProvider;
             if (FileDialogs == null)
             {

@@ -460,7 +460,7 @@ namespace MatterHackers.GuiAutomation
 			{
 				ImageBuffer imageToLookFor = new ImageBuffer();
 
-				if (ImageIO.LoadImageData(pathToImage, imageToLookFor))
+				if (Configuration.ImageIO.LoadImageData(pathToImage, imageToLookFor))
 				{
 					return imageToLookFor;
 				}

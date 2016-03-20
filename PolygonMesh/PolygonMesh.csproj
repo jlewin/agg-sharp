@@ -176,6 +176,7 @@
     <ProjectReference Include="Net3dBool\Net3dBool.csproj">
       <Project>{7ee4636d-8a92-4015-9562-7fcd6add0645}</Project>
       <Name>Net3dBool</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

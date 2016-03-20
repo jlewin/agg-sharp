@@ -21,7 +21,9 @@ namespace MatterHackers.Agg.PlatformAbstract
 		{
 			if (InitialDirectory == "")
 			{
-				InitialDirectory = FileDialog.LastDirectoryUsed;
+
+				// TODO: ************** MUST IMPLEMENT ****************
+				//			InitialDirectory = Configuration.FileDialogs.LastDirectoryUsed;
 			}
 		}
 	}

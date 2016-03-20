@@ -68,7 +68,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 		void Dispose();
 	}
 
-	internal enum SerialSignal
+	public enum SerialSignal
 	{
 		None = 0,
 		Cd = 1, // Carrier detect

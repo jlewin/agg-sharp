@@ -34,10 +34,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using MatterHackers.Agg.Extensibility;
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {
-	public class FrostedSerialPortFactory : IFrostedSerialPortFactory
+	public class FrostedSerialPortFactory : IFrostedSerialPortFactory, IApplicationPlugin
 	{
 		[DllImport("SetSerial", SetLastError = true)]
 		private static extern int set_baud(string portName, int baud_rate);
@@ -55,15 +56,17 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                         // always add a serial port this is a raw port
                         availableFactories.Add("Raw", new FrostedSerialPortFactory());
 
-                        // add in any plugins that we find with other factories.
-                        PluginFinder<FrostedSerialPortFactory> pluginFinder = new PluginFinder<FrostedSerialPortFactory>();
+						// add in any plugins that we find with other factories.
 
-                        foreach (FrostedSerialPortFactory plugin in pluginFinder.Plugins)
+
+						var portPlugins = PluginManager.Instance.FromType<FrostedSerialPortFactory>();
+
+                        foreach (FrostedSerialPortFactory plugin in portPlugins)
                         {
                             availableFactories.Add(plugin.GetDriverType(), plugin);
                         }
 
-                        // If we did not finde a RepRap driver add the default.
+                        // If we did not find a RepRap driver add the default.
                         if (!availableFactories.ContainsKey("RepRap"))
                         {
                             availableFactories.Add("RepRap", new FrostedSerialPortFactory());
@@ -84,8 +87,8 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                 }
             }
 		}
-		static IFrostedSerialPortFactory instance = null;
-		public static IFrostedSerialPortFactory Instance
+
+		public static IFrostedSerialPortFactory Instance;
 
 		virtual protected string GetDriverType()
 		{
@@ -121,14 +124,9 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 		{
 		}
 
-		public bool IsWindows
-		{
-			get
-			{
-				PlatformID id = Environment.OSVersion.Platform;
-				return id == PlatformID.Win32Windows || id == PlatformID.Win32NT; // WinCE not supported
-			}
-		}
+		public bool IsWindows { get; } = Environment.OSVersion.Platform == PlatformID.Win32Windows || Environment.OSVersion.Platform == PlatformID.Win32NT;
+
+		public PluginInfo MetaData { get; } = null;
 
 		public virtual IFrostedSerialPort Create(string serialPortName)
 		{

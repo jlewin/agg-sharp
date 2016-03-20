@@ -22,6 +22,11 @@ namespace MatterHackers.Agg.Extensibility
             }
         }
 
+		public IEnumerable<T> FromType<T>() where T : class, IApplicationPlugin
+		{
+			return Plugins.Where(p => p is T).Select(p => p as T);
+		}
+
         static PluginManager()
         {
             // Probing path
@@ -32,10 +37,10 @@ namespace MatterHackers.Agg.Extensibility
             var pluginAssemblies = new List<string>(Directory.GetFiles(searchDirectory, "*.dll"));
 
             // HACK: Drop support for exe plugins - this very questionable -  why would anyone distribute a plugin as an 
-            // executable and why would be want to support that scenario? It could be done - it's poor form and not appriopriate
+            // executable and why would be want to support that scenario? It could be done - it's poor form and not appropriate
             pluginAssemblies.AddRange(Directory.GetFiles(searchDirectory, "*.exe"));
 
-            var pluginInterface = typeof(IApplicationPlugin);
+            Type pluginInterface = typeof(IApplicationPlugin);
 
             foreach (string assemblyPath in pluginAssemblies)
             {

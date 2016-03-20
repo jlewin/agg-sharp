@@ -1,16 +1,13 @@
-﻿using System;
-using System.IO;
 ﻿using MatterHackers.Agg.UI;
 using System;
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using MatterHackers.Agg.PlatformAbstract;
-using System.Collections.Generic;
-
-namespace MatterHackers.Agg.WindowsFileDialogs
+namespace MatterHackers.Agg.PlatformAbstract
 {
     public class FileDialogPlugin : FileDialogProvider
     {
@@ -20,14 +17,8 @@ namespace MatterHackers.Agg.WindowsFileDialogs
 			return path;
 		}
 
-		// TODO: Investigate if this signature is used and/or why it's missing for the lastest
-		public override IEnumerable<string> ResolveFilePaths(IEnumerable<string> filePaths)
-		{
-			// Only perform Mac file reference resoltion when the string starts with the expected token
-			return filePaths.Select(path => !path.StartsWith("/.file") ? path : this.ResolveFilePath(path));
-		}
-
 		public override bool OpenFileDialog(OpenFileDialogParams openParams, OpenFileDialogDelegate callback)
+		{
 			WidgetForWindowsFormsAbstract.MainWindowsFormsWindow.ShowingSystemDialog = true;
 			openParams.FileName = "";
 			openParams.FileNames = null;

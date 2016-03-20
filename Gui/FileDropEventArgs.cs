@@ -19,7 +19,9 @@ namespace MatterHackers.Agg.UI
 		{
 			this.x = x;
 			this.y = y;
-			this.DroppedFiles = Configuration.FileDialog.ResolveFilePaths(droppedFiles).ToList();
+
+			// TODO: ************** MUST IMPLEMENT ****************
+			//this.DroppedFiles = Configuration.FileDialogs.ResolveFilePaths(droppedFiles).ToList();
 		}
 
 		public bool AcceptDrop { get; set; }
