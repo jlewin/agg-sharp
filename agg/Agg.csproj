@@ -201,7 +201,7 @@
     <Compile Include="Extensibility\Providers\IFileDialogProvider.cs" />
     <Compile Include="Extensibility\Providers\IFrostedSerialPortFactory.cs" />
     <Compile Include="Extensibility\Providers\IImageIOProvider.cs" />
-    <Compile Include="Extensibility\Providers\OsInformationProvider.cs" />
+    <Compile Include="Extensibility\Providers\IOsInformationProvider.cs" />
     <Compile Include="Extensibility\FileDialogs\FileDialogParams.cs" />
     <Compile Include="Extensibility\FileDialogs\OpenFileDialogPrams.cs" />
     <Compile Include="Extensibility\FileDialogs\SaveFileDialogParams.cs" />
