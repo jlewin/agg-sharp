@@ -132,7 +132,7 @@ namespace MatterHackers.GCodeVisualizer
 			UiThread.RunOnIdle(() =>
 				{
 					OpenFileDialogParams openParams = new OpenFileDialogParams("gcode files|*.gcode");
-					Configuration.FileDialogs.OpenFileDialog(openParams, onFileSelected);
+					AggContext.FileDialogs.OpenFileDialog(openParams, onFileSelected);
 				});
 		}
 

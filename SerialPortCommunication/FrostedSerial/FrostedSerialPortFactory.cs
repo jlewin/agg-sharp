@@ -101,7 +101,7 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 		//Windows-only function
 		public virtual bool SerialPortAlreadyOpen(string portName)
 		{
-			if (Configuration.OsInformation.OperatingSystem == OSType.Windows)
+			if (AggContext.OperatingSystem == OSType.Windows)
 			{
 				const int dwFlagsAndAttributes = 0x40000000;
 				const int GENERIC_READ = unchecked((int)0x80000000);

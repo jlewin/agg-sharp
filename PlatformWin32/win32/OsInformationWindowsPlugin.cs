@@ -69,30 +69,29 @@ namespace MatterControl.Agg.PlatformAbstract
 			return false;
 		}
 
-        public OsInformationWindowsPlugin()
-        {
-            this.OperatingSystem = GetOSType();
-        }
+		public OsInformationWindowsPlugin()
+		{
+			this.OperatingSystem = GetOSType();
+		}
 
-		// TODO: We compile each application on the appropriate platform and at compile time know, Windows vs Mac vs Linux. Runtime evaluation of the platform seems weird. Do we really ever want a Windows compiled exe to run on Linux or Mac and behave correctly?
-        private OSType GetOSType()
-        {
-            if (Path.DirectorySeparatorChar == '\\')
-            {
-                return OSType.Windows;
-            }
-            else if (IsRunningOnMac())
-            {
-                return OSType.Mac;
-            }
-            else if (Environment.OSVersion.Platform == PlatformID.Unix)
-            {
-                return OSType.X11;
-            }
-            else
-            {
-                return OSType.Other;
-            }
-        }
-    }
+		private OSType GetOSType()
+		{
+			if (Path.DirectorySeparatorChar == '\\')
+			{
+				return OSType.Windows;
+			}
+			else if (IsRunningOnMac())
+			{
+				return OSType.Mac;
+			}
+			else if (Environment.OSVersion.Platform == PlatformID.Unix)
+			{
+				return OSType.X11;
+			}
+			else
+			{
+				return OSType.Other;
+			}
+		}
+	}
 }

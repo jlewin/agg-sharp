@@ -118,7 +118,7 @@ namespace MatterHackers.Agg
 				position.y = Math.Max(0, position.y);
 
 				// If it's mac make sure we are not completely under the menu bar.
-				if (Configuration.OsInformation.OperatingSystem == OSType.Mac)
+				if (AggContext.OperatingSystem == OSType.Mac)
 				{
 					position.y = Math.Max(5, position.y);
 				}

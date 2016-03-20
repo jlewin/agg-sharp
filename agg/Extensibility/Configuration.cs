@@ -12,7 +12,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 
 	// TODO: alternate names AggConfig, AggContext, AggPlatform
 	// In all cases this is the compile time Agg config build by the host application
-	public static class Configuration
+	public static class AggContext
 	{
 		// Takes a full typename string: i.e. "MyNamespace.MyType, MyAssembly"
 		public static object LoadProviderFromAssembly(string typeString)
@@ -34,11 +34,9 @@ namespace MatterHackers.Agg.PlatformAbstract
 		public static IStaticData StaticData { get; }
 		public static PlatformConfig Config { get; }
 
+		public static OSType OperatingSystem { get; }
 
-		// TODO: This extra namespace for OSInformation is unnecessary. The one property that is on this item should be propagated to the Configuration class
-		public static OsInformationProvider OsInformation { get; }
-
-		static Configuration()
+		static AggContext()
 		{
 			if(File.Exists("AggPlatform.json"))
 			{
@@ -57,11 +55,13 @@ namespace MatterHackers.Agg.PlatformAbstract
 			var providerTypes = Config.ProviderTypes;
 
 			// OsInformation Provider
-			OsInformation = LoadProviderFromAssembly<OsInformationProvider>(providerTypes.OsInformationProvider);
-			if (OsInformation == null)
+			var osInformation = LoadProviderFromAssembly<OsInformationProvider>(providerTypes.OsInformationProvider);
+			if (osInformation == null)
 			{
 				throw new Exception(string.Format("Unable to load the OsInformation provider"));
 			}
+
+			OperatingSystem = osInformation.OperatingSystem;
 
 			// ImageIO Provider
 			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(providerTypes.ImageIOProvider);

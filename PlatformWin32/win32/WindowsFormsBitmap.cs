@@ -80,7 +80,7 @@ namespace MatterHackers.Agg.UI
 			RectangleInt intRect = new RectangleInt(0, 0, (int)aggAppWidget.Width, (int)aggAppWidget.Height);
 			aggBitmapAppWidget.bitmapBackBuffer.UpdateHardwareSurface(intRect);
 
-			if (Configuration.OsInformation.OperatingSystem != OSType.Windows)
+			if (AggContext.OperatingSystem != OSType.Windows)
 			{
 				//displayGraphics.DrawImage(aggBitmapAppWidget.bitmapBackBuffer.windowsBitmap, windowsRect, windowsRect, GraphicsUnit.Pixel);  // around 250 ms for full screen
 				displayGraphics.DrawImageUnscaled(aggBitmapAppWidget.bitmapBackBuffer.windowsBitmap, 0, 0); // around 200 ms for full screnn

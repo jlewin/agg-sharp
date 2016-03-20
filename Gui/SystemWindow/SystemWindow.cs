@@ -121,7 +121,7 @@ namespace MatterHackers.Agg.UI
 			ToolTipManager = new ToolTipManager(this);
 			if (globalSystemWindowCreator == null)
 			{
-				globalSystemWindowCreator = Configuration.LoadProviderFromAssembly<ISystemWindowProvider>(Configuration.Config.ProviderTypes.SystemWindowProvider);
+				globalSystemWindowCreator = AggContext.LoadProviderFromAssembly<ISystemWindowProvider>(AggContext.Config.ProviderTypes.SystemWindowProvider);
 				if (globalSystemWindowCreator == null)
 				{
 					throw new Exception(string.Format("Unable to load the SystemWindow provider"));
