@@ -55,7 +55,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			var providerTypes = Config.ProviderTypes;
 
 			// OsInformation Provider
-			var osInformation = LoadProviderFromAssembly<OsInformationProvider>(providerTypes.OsInformationProvider);
+			var osInformation = LoadProviderFromAssembly<IOsInformationProvider>(providerTypes.OsInformationProvider);
 			if (osInformation == null)
 			{
 				throw new Exception(string.Format("Unable to load the OsInformation provider"));

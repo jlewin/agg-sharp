@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 
 namespace MatterControl.Agg.PlatformAbstract
 {
-	public class OsInformationWindowsPlugin : OsInformationProvider
+	public class OsInformationWindowsPlugin : IOsInformationProvider
 	{
 		//From Managed.Windows.Forms/XplatUI
 		[DllImport("libc")]
@@ -73,6 +73,8 @@ namespace MatterControl.Agg.PlatformAbstract
 		{
 			this.OperatingSystem = GetOSType();
 		}
+
+		public OSType OperatingSystem { get; }
 
 		private OSType GetOSType()
 		{

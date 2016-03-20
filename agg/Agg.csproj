@@ -198,9 +198,9 @@
     <Compile Include="Extensibility\IFrostedSerialPort.cs" />
     <Compile Include="Extensibility\IFrostedSerialStream.cs" />
     <Compile Include="Extensibility\IStaticData.cs" />
-    <Compile Include="Extensibility\Providers\FileDialogProvider.cs" />
+    <Compile Include="Extensibility\Providers\IFileDialogProvider.cs" />
     <Compile Include="Extensibility\Providers\IFrostedSerialPortFactory.cs" />
-    <Compile Include="Extensibility\Providers\ImageIOProvider.cs" />
+    <Compile Include="Extensibility\Providers\IImageIOProvider.cs" />
     <Compile Include="Extensibility\Providers\OsInformationProvider.cs" />
     <Compile Include="Extensibility\FileDialogs\FileDialogParams.cs" />
     <Compile Include="Extensibility\FileDialogs\OpenFileDialogPrams.cs" />

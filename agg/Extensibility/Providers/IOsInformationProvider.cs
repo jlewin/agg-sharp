@@ -5,8 +5,8 @@ using System.Text;
 
 namespace MatterHackers.Agg.PlatformAbstract
 {
-	public class OsInformationProvider
+	public interface IOsInformationProvider
 	{
-		public virtual OSType OperatingSystem { get; set; }
+		OSType OperatingSystem { get; }
 	}
 }
