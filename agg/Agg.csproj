@@ -315,7 +315,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Extensibility\DefaultPlatformConfig.json" />
+    <EmbeddedResource Include="Extensibility\AggPlatform.json" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

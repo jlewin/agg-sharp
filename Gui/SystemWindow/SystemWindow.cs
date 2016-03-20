@@ -35,18 +35,18 @@ using MatterHackers.Agg.PlatformAbstract;
 
 namespace MatterHackers.Agg.UI
 {
-	public abstract class SystemWindowCreatorPlugin
+	public interface ISystemWindowProvider
 	{
-		public abstract void ShowSystemWindow(SystemWindow systemWindow);
+		void ShowSystemWindow(SystemWindow systemWindow);
 
-		public abstract Point2D GetDesktopPosition(SystemWindow systemWindow);
+		Point2D GetDesktopPosition(SystemWindow systemWindow);
 
-		public abstract void SetDesktopPosition(SystemWindow systemWindow, Point2D position);
+		void SetDesktopPosition(SystemWindow systemWindow, Point2D position);
 	}
 
 	public class SystemWindow : GuiWidget
 	{
-		private static SystemWindowCreatorPlugin globalSystemWindowCreator;
+		private static ISystemWindowProvider globalSystemWindowCreator;
 		public EventHandler TitleChanged;
 
 		public AbstractOsMappingWidget AbstractOsMappingWidget { get; set; }
@@ -118,19 +118,17 @@ namespace MatterHackers.Agg.UI
 		public SystemWindow(double width, double height)
 			: base(width, height, SizeLimitsToSet.None)
 		{
-            ToolTipManager = new ToolTipManager(this);
+			ToolTipManager = new ToolTipManager(this);
 			if (globalSystemWindowCreator == null)
 			{
-				// TODO: This needs to driven by config or compile time values !!!!!!!!!!!!!!! NOT HARDCODED !!!!!!!!!!!!!!!!!!!!1
-			    var typeString = "MatterHackers.Agg.SystemWindowCreator_WindowsForms, agg_platform_win32";
-                globalSystemWindowCreator = Configuration.LoadProviderFromAssembly(typeString) as SystemWindowCreatorPlugin;
-                if (globalSystemWindowCreator == null)
-                {
-                    throw new Exception(string.Format("Unable to load the Window provider"));
-                }
+				globalSystemWindowCreator = Configuration.LoadProviderFromAssembly<ISystemWindowProvider>(Configuration.Config.ProviderTypes.SystemWindowProvider);
+				if (globalSystemWindowCreator == null)
+				{
+					throw new Exception(string.Format("Unable to load the SystemWindow provider"));
+				}
 			}
 
-            allOpenSystemWindows.Add(this);
+			allOpenSystemWindows.Add(this);
 		}
 
 		public override Vector2 MinimumSize

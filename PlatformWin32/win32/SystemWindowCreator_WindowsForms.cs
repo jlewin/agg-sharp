@@ -33,14 +33,14 @@ using System;
 
 namespace MatterHackers.Agg
 {
-	public class SystemWindowCreator_WindowsForms : SystemWindowCreatorPlugin
+	public class SystemWindowCreator_WindowsForms : ISystemWindowProvider
 	{
 		private bool pendingSetInitialDesktopPosition = false;
 		private Point2D InitialDesktopPosition = new Point2D();
 
 		IGuiFactory factoryToUse = null;
 
-		public override void ShowSystemWindow(SystemWindow systemWindow)
+		public void ShowSystemWindow(SystemWindow systemWindow)
 		{
 			bool firstWindow = false;
 			if (factoryToUse == null)
@@ -99,7 +99,7 @@ namespace MatterHackers.Agg
 			}
 		}
 
-		public override Point2D GetDesktopPosition(SystemWindow systemWindow)
+		public Point2D GetDesktopPosition(SystemWindow systemWindow)
 		{
 			if (systemWindow.AbstractOsMappingWidget != null)
 			{
@@ -109,7 +109,7 @@ namespace MatterHackers.Agg
 			return new Point2D();
 		}
 
-		public override void SetDesktopPosition(SystemWindow systemWindow, Point2D position)
+		public void SetDesktopPosition(SystemWindow systemWindow, Point2D position)
 		{
 			if (systemWindow.AbstractOsMappingWidget != null)
 			{

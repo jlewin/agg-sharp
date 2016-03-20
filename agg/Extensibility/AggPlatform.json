@@ -1,0 +1,9 @@
+﻿{
+	"ProviderTypes": {
+		"OsInformationProvider": "MatterControl.Agg.PlatformAbstract.OsInformationWindowsPlugin, agg_platform_win32",
+		"DialogProvider": "MatterHackers.Agg.PlatformAbstract.FileDialogPlugin, agg_platform_win32",
+		"ImageIOProvider": "MatterHackers.Agg.Image.ImageIOWindowsPlugin, agg_platform_win32",
+		"StaticDataProvider": "MatterHackers.Agg.FileSystemStaticData, agg_platform_win32",
+		"SystemWindowProvider": "MatterHackers.Agg.SystemWindowCreator_WindowsForms, agg_platform_win32"
+	}
+}

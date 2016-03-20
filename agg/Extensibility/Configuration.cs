@@ -34,6 +34,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 		public static IStaticData StaticData { get; }
 		public static PlatformConfig Config { get; }
 
+
 		// TODO: This extra namespace for OSInformation is unnecessary. The one property that is on this item should be propagated to the Configuration class
 		public static OsInformationProvider OsInformation { get; }
 
@@ -47,35 +48,37 @@ namespace MatterHackers.Agg.PlatformAbstract
 			else
 			{
 				// Use the default config embedded in the assembly if the file system override does not exist
-				using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MatterHackers.Agg.Extensibility.DefaultPlatformConfig.json")))
+				using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MatterHackers.Agg.Extensibility.AggPlatform.json")))
 				{
 					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<PlatformConfig>(reader.ReadToEnd());
 				}
 			}
 
+			var providerTypes = Config.ProviderTypes;
+
 			// OsInformation Provider
-			OsInformation = LoadProviderFromAssembly<OsInformationProvider>(Config.Providers.OsInformationProvider);
+			OsInformation = LoadProviderFromAssembly<OsInformationProvider>(providerTypes.OsInformationProvider);
 			if (OsInformation == null)
 			{
 				throw new Exception(string.Format("Unable to load the OsInformation provider"));
 			}
 
 			// ImageIO Provider
-			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(Config.Providers.ImageIOProvider);
+			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(providerTypes.ImageIOProvider);
 			if (ImageIO == null)
 			{
 				throw new Exception(string.Format("Unable to load the ImageIO provider"));
 			}
 
 			// FileDialog Provider
-			FileDialogs = LoadProviderFromAssembly<IFileDialogProvider>(Config.Providers.DialogProvider);
+			FileDialogs = LoadProviderFromAssembly<IFileDialogProvider>(providerTypes.DialogProvider);
 			if (FileDialogs == null)
 			{
 				throw new Exception(string.Format("Unable to load the File Dialog provider"));
 			}
 
 			// FileDialog Provider
-			StaticData = LoadProviderFromAssembly<IStaticData>(Config.Providers.StaticDataProvider);
+			StaticData = LoadProviderFromAssembly<IStaticData>(providerTypes.StaticDataProvider);
 			if (StaticData == null)
 			{
 				throw new Exception(string.Format("Unable to load the StaticData provider"));
@@ -84,7 +87,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 
 		public class PlatformConfig
 		{
-			public ProviderSettings Providers { get; set; }
+			public ProviderSettings ProviderTypes { get; set; }
 			public SliceEngineSettings SliceEngine { get; set; } = new SliceEngineSettings();
 		}
 
@@ -94,6 +97,7 @@ namespace MatterHackers.Agg.PlatformAbstract
 			public string DialogProvider { get; set; }
 			public string ImageIOProvider { get; set; }
 			public string StaticDataProvider { get; set; }
+			public string SystemWindowProvider { get; set; }
 		}
 
 		public class SliceEngineSettings
