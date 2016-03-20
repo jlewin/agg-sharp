@@ -124,7 +124,14 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 		{
 		}
 
-		public bool IsWindows { get; } = Environment.OSVersion.Platform == PlatformID.Win32Windows || Environment.OSVersion.Platform == PlatformID.Win32NT;
+		public bool IsWindows
+		{
+			get
+			{
+				PlatformID id = Environment.OSVersion.Platform;
+				return id == PlatformID.Win32Windows || id == PlatformID.Win32NT; // WinCE not supported
+			}
+		}
 
 		public PluginInfo MetaData { get; } = null;
 
