@@ -32,69 +32,73 @@ namespace MatterHackers.Agg.PlatformAbstract
 		public static IFileDialogProvider FileDialogs { get; }
 		public static IFrostedSerialPortFactory FrostedSerialPortFactory { get; }
 		public static IStaticData StaticData { get; }
+		public static PlatformConfig Config { get; }
 
 		// TODO: This extra namespace for OSInformation is unnecessary. The one property that is on this item should be propagated to the Configuration class
 		public static OsInformationProvider OsInformation { get; }
 
 		static Configuration()
 		{
-			PlatformConfig config;
-
-			if(File.Exists("AggPlatform1.json"))
+			if(File.Exists("AggPlatform.json"))
 			{
 				// Use the config file from the file system if it exists
-				config = Newtonsoft.Json.JsonConvert.DeserializeObject<PlatformConfig>(File.ReadAllText("AggPlatform.json"));
+				Config = Newtonsoft.Json.JsonConvert.DeserializeObject<PlatformConfig>(File.ReadAllText("AggPlatform.json"));
 			}
 			else
 			{
 				// Use the default config embedded in the assembly if the file system override does not exist
 				using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MatterHackers.Agg.Extensibility.DefaultPlatformConfig.json")))
 				{
-					config = Newtonsoft.Json.JsonConvert.DeserializeObject<PlatformConfig>(reader.ReadToEnd());
+					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<PlatformConfig>(reader.ReadToEnd());
 				}
 			}
 
 			// OsInformation Provider
-			OsInformation = LoadProviderFromAssembly<OsInformationProvider>(config.Providers.OsInformationProvider);
+			OsInformation = LoadProviderFromAssembly<OsInformationProvider>(Config.Providers.OsInformationProvider);
 			if (OsInformation == null)
 			{
 				throw new Exception(string.Format("Unable to load the OsInformation provider"));
 			}
 
 			// ImageIO Provider
-			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(config.Providers.ImageIOProvider);
+			ImageIO = LoadProviderFromAssembly<ImageIOProvider>(Config.Providers.ImageIOProvider);
 			if (ImageIO == null)
 			{
 				throw new Exception(string.Format("Unable to load the ImageIO provider"));
 			}
 
 			// FileDialog Provider
-			FileDialogs = LoadProviderFromAssembly<IFileDialogProvider>(config.Providers.DialogProvider);
+			FileDialogs = LoadProviderFromAssembly<IFileDialogProvider>(Config.Providers.DialogProvider);
 			if (FileDialogs == null)
 			{
 				throw new Exception(string.Format("Unable to load the File Dialog provider"));
 			}
 
 			// FileDialog Provider
-			StaticData = LoadProviderFromAssembly<IStaticData>(config.Providers.StaticDataProvider);
+			StaticData = LoadProviderFromAssembly<IStaticData>(Config.Providers.StaticDataProvider);
 			if (StaticData == null)
 			{
 				throw new Exception(string.Format("Unable to load the StaticData provider"));
 			}
 		}
 
-		private class PlatformConfig
+		public class PlatformConfig
 		{
-			public ProviderConfig Providers { get; set; }
-			public Dictionary<string, string> Settings { get; set; }
+			public ProviderSettings Providers { get; set; }
+			public SliceEngineSettings SliceEngine { get; set; } = new SliceEngineSettings();
 		}
 
-		private class ProviderConfig
+		public class ProviderSettings
 		{
 			public string OsInformationProvider { get; set; }
 			public string DialogProvider { get; set; }
 			public string ImageIOProvider { get; set; }
 			public string StaticDataProvider { get; set; }
+		}
+
+		public class SliceEngineSettings
+		{
+			public bool RunInProcess { get; set; } = false;
 		}
 	}
 }
