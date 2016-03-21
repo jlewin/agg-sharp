@@ -57,11 +57,7 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                         availableFactories.Add("Raw", new FrostedSerialPortFactory());
 
 						// add in any plugins that we find with other factories.
-
-
-						var portPlugins = PluginManager.Instance.FromType<FrostedSerialPortFactory>();
-
-                        foreach (FrostedSerialPortFactory plugin in portPlugins)
+                        foreach (var plugin in AggContext.Plugins.FromType<FrostedSerialPortFactory>())
                         {
                             availableFactories.Add(plugin.GetDriverType(), plugin);
                         }

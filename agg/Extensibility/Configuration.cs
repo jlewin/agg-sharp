@@ -1,4 +1,5 @@
-﻿using MatterHackers.Agg.PlatformAbstract;
+﻿using MatterHackers.Agg.Extensibility;
+using MatterHackers.Agg.PlatformAbstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,8 +34,23 @@ namespace MatterHackers.Agg.PlatformAbstract
 		public static IFrostedSerialPortFactory FrostedSerialPortFactory { get; }
 		public static IStaticData StaticData { get; }
 		public static PlatformConfig Config { get; }
-
 		public static OSType OperatingSystem { get; }
+
+		private static PluginManager pluginManager = null;
+		public static PluginManager Plugins
+		{
+			get
+			{
+				// PluginManager initialization must occur late, after the config is loaded and after localization libraries
+				// have occurred, which currently is driven by MatterControlApplication init
+				if (pluginManager == null)
+				{
+					pluginManager = new PluginManager();
+				}
+
+				return pluginManager;
+			}
+		}
 
 		static AggContext()
 		{

@@ -10,9 +10,7 @@ namespace MatterHackers.Agg.Extensibility
 {
 	public class PluginManager
 	{
-		public readonly static PluginManager Instance = new PluginManager();
-
-		private PluginManager()
+		internal PluginManager()
 		{
 			var plugins = new List<IApplicationPlugin>();
 			
