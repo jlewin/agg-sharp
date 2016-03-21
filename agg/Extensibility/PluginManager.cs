@@ -7,13 +7,43 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Net;
 using System.Collections.Specialized;
+using Newtonsoft.Json;
 
 namespace MatterHackers.Agg.Extensibility
 {
 	public class PluginManager
 	{
+		private string pluginStateFile = "DisabledPlugins.json";
+		private string knownPluginsFile = "KnownPlugins.json";
+
 		internal PluginManager()
 		{
+			if (File.Exists(pluginStateFile))
+			{
+				try
+				{
+					this.Disabled = JsonConvert.DeserializeObject<HashSet<string>>(File.ReadAllText(pluginStateFile));
+				}
+				catch
+				{
+				}
+			}
+			else
+			{
+				this.Disabled = new HashSet<string>();
+			}
+
+			if (File.Exists(knownPluginsFile))
+			{
+				try
+				{
+					this.KnownPlugins = JsonConvert.DeserializeObject<List<PluginState>>(File.ReadAllText(knownPluginsFile));
+				}
+				catch
+				{
+				}
+			}
+
 			var plugins = new List<IApplicationPlugin>();
 			
 			// Probing path
@@ -44,6 +74,13 @@ namespace MatterHackers.Agg.Extensibility
 							continue;
 						}
 
+						if (Disabled != null && Disabled.Contains(type.FullName))
+						{
+							continue;
+						}
+
+						Console.WriteLine("Loading Plugin: " + type.FullName);
+
 						var instance = Activator.CreateInstance(type) as IApplicationPlugin;
 						if (instance == null)
 						{
@@ -51,8 +88,6 @@ namespace MatterHackers.Agg.Extensibility
 							Trace.WriteLine("Unable to create Plugin Instance: {0}", type.ToString());
 							continue;
 						}
-
-						Console.WriteLine("Adding MC Plugin: " + instance.GetType().FullName);
 
 						plugins.Add(instance);
 					}
@@ -64,9 +99,41 @@ namespace MatterHackers.Agg.Extensibility
 			}
 
 			this.Plugins = plugins;
+
+			/* Generated new knownPlugins.json file
+			KnownPlugins = plugins.Where(p => p.MetaData != null).Select(p => new PluginState { TypeName = p.GetType().FullName, Name = p.MetaData.Name }).ToList();
+
+			File.WriteAllText(
+				"knownPlugins.json",
+				JsonConvert.SerializeObject(KnownPlugins, Newtonsoft.Json.Formatting.Indented));
+				*/
 		}
 
 		public List<IApplicationPlugin> Plugins { get; }
+
+		//public Dictionary<string, PluginState> KnownPlugins { get; }
+		public List<PluginState> KnownPlugins { get; }
+
+		public class PluginState
+		{
+			public string Name { get; set; }
+			public string TypeName { get; set; }
+			//public bool Enabled { get; set; }
+			//public bool UpdateAvailable { get; set; }
+		}
+
+		public HashSet<string> Disabled { get; }
+
+		public void Disable(string typeName) => Disabled.Add(typeName);
+
+		public void Enable(string typeName) => Disabled.Remove(typeName);
+
+		public void Save()
+		{
+			File.WriteAllText(
+				pluginStateFile,
+				Newtonsoft.Json.JsonConvert.SerializeObject(Disabled, Newtonsoft.Json.Formatting.Indented));
+		}
 
 		public IEnumerable<T> FromType<T>() where T : class, IApplicationPlugin
 		{
@@ -108,7 +175,6 @@ namespace MatterHackers.Agg.Extensibility
 
 			File.WriteAllText(dumpPath, Newtonsoft.Json.JsonConvert.SerializeObject(source));
 		}
-
 
 		public void QueryPluginSource()
 		{
