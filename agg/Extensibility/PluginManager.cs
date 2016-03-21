@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using System.Net;
+using System.Collections.Specialized;
 
 namespace MatterHackers.Agg.Extensibility
 {
@@ -71,5 +73,68 @@ namespace MatterHackers.Agg.Extensibility
 			return Plugins.Where(p => p is T).Select(p => p as T);
 		}
 
+		public class MatterControlPluginItem
+		{
+			public string Name { get; set; }
+			public string Url { get; set; }
+			public string Version { get; set; }
+			public DateTime ReleaseDate { get; set; }
+		}
+
+		private string dumpPath = @"C:\Data\Sources\MatterHackers\MatterControl\PluginRequestResults.json";
+
+		public void GeneratePluginItems()
+		{
+			var source = new MatterControlPluginItem[]{
+				new MatterControlPluginItem(){
+					Name = "Test1",
+					ReleaseDate = DateTime.Parse("12/1/2001"),
+					Url = "http://something/1",
+					Version = "1.2.3"
+				},
+				new MatterControlPluginItem(){
+					Name = "Test2",
+					ReleaseDate = DateTime.Parse("12/2/2001"),
+					Url = "http://something/4",
+					Version = "1.2.3"
+				},
+				new MatterControlPluginItem(){
+					Name = "Test3",
+					ReleaseDate = DateTime.Parse("12/3/2001"),
+					Url = "http://something/2",
+					Version = "1.0.0"
+				}
+			};
+
+			File.WriteAllText(dumpPath, Newtonsoft.Json.JsonConvert.SerializeObject(source));
+		}
+
+
+		public void QueryPluginSource()
+		{
+			string sourceUrl = "http://someurl";
+
+			WebClient client = new WebClient();
+
+			// Build request keys
+			NameValueCollection xxx = new NameValueCollection();
+			xxx.Add("userToken", "xxx");
+
+			// Perform request
+			var results = client.UploadValues(sourceUrl, xxx);
+
+			var pluginsText = File.ReadAllText(dumpPath);
+
+			// Work with results
+			var plugins = Newtonsoft.Json.JsonConvert.DeserializeObject<MatterControlPluginItem[]>(pluginsText);
+
+			// Likely display results
+
+			// or 
+
+			// Compare the results looking for package upgrades
+
+			// Display a notification that updates are available
+		}
 	}
 }
