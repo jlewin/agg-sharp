@@ -164,6 +164,7 @@
     <Compile Include="DrawEventArgs.cs" />
     <Compile Include="FLowLeftRightWithWrapping.cs" />
     <Compile Include="IDemoApp.cs" />
+    <Compile Include="Extensibility\IWidgetPlugin.cs" />
     <Compile Include="InvalidateEventArgs.cs" />
     <Compile Include="DefaultViewFactory.cs" />
     <Compile Include="DiagnosticsWidget.cs" />

@@ -33,12 +33,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using MatterHackers.Agg;
+using MatterHackers.Agg.Extensibility;
 using MatterHackers.Agg.Platform;
 using Microsoft.Win32.SafeHandles;
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {
-	public class FrostedSerialPortFactory
+	public class FrostedSerialPortFactory : IFrostedSerialPortFactory, IApplicationPlugin
 	{
 		[DllImport("SetSerial", SetLastError = true)]
 		private static extern int set_baud(string portName, int baud_rate);
@@ -59,6 +60,7 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                         // add in any plugins that we find with other factories.
                         var portFactories = PluginFinder.CreateInstancesOf<FrostedSerialPortFactory>();
 
+                        //foreach (var portPlugin in AggContext.Plugins.FromType<FrostedSerialPortFactory>())
                         foreach (FrostedSerialPortFactory plugin in portFactories)
                         {
                             availableFactories.Add(plugin.GetDriverType(), plugin);
@@ -85,6 +87,8 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
                 }
             }
 		}
+
+		public static IFrostedSerialPortFactory Instance;
 
 		virtual protected string GetDriverType()
 		{
@@ -128,6 +132,8 @@ namespace MatterHackers.SerialPortCommunication.FrostedSerial
 				return id == PlatformID.Win32Windows || id == PlatformID.Win32NT; // WinCE not supported
 			}
 		}
+
+		public PluginInfo MetaData { get; } = null;
 
 		public virtual IFrostedSerialPort Create(string serialPortName)
 		{

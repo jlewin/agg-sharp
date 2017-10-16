@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using MatterHackers.Agg.Extensibility;
 using Newtonsoft.Json;
 
 namespace MatterHackers.Agg.Platform
@@ -94,6 +95,22 @@ namespace MatterHackers.Agg.Platform
 			set
 			{
 				_osInformation = value;
+			}
+		}
+
+		private static PluginManager pluginManager = null;
+		public static PluginManager Plugins
+		{
+			get
+			{
+				// PluginManager initialization must occur late, after the config is loaded and after localization libraries
+				// have occurred, which currently is driven by MatterControlApplication init
+				if (pluginManager == null)
+				{
+					pluginManager = new PluginManager();
+				}
+
+				return pluginManager;
 			}
 		}
 

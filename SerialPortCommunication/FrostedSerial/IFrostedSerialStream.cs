@@ -2,7 +2,7 @@
 
 namespace MatterHackers.SerialPortCommunication.FrostedSerial
 {
-	internal interface IFrostedSerialStream : IDisposable
+	public interface IFrostedSerialStream : IDisposable
 	{
 		int Read(byte[] buffer, int offset, int count);
 
