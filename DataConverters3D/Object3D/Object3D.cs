@@ -349,7 +349,7 @@ namespace MatterHackers.DataConverters3D
 			return loadedItem;
 		}
 
-		public void Invalidate()
+		protected virtual void OnInvalidate()
 		{
 			Invalidated?.Invoke(this, null);
 
@@ -357,6 +357,11 @@ namespace MatterHackers.DataConverters3D
 			{
 				Parent.Invalidate();
 			}
+		}
+
+		public void Invalidate()
+		{
+			this.OnInvalidate();
 		}
 
 		// Deep clone via json serialization
