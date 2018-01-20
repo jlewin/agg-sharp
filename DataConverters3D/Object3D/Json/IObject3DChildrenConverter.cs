@@ -48,7 +48,7 @@ namespace MatterHackers.DataConverters3D
 				{
 					mappingTypesCache = new Dictionary<string, string>();
 
-					foreach (var type in PluginFinder.FindTypes<IObject3D>())
+					foreach (var type in InteractiveScene.RegisteredTypes)
 					{
 						mappingTypesCache.Add(type.Name, type.AssemblyQualifiedName);
 					}

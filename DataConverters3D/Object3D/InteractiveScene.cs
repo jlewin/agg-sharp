@@ -46,6 +46,15 @@ namespace MatterHackers.DataConverters3D
 {
 	public class InteractiveScene : IObject3D
 	{
+		private static List<Type> _registeredTypes = new List<Type>();
+
+		public static IEnumerable<Type> RegisteredTypes => _registeredTypes;
+
+		public static void RegisterType<TSource>() where TSource : IObject3D
+		{
+			_registeredTypes.Add(typeof(TSource));
+		}
+
 		public event EventHandler SelectionChanged;
 		public event EventHandler<InvalidateArgs> Invalidated;
 
