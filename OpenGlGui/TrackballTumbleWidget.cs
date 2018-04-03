@@ -92,6 +92,12 @@ namespace MatterHackers.Agg.OpenGlGui
 			this.sourceWidget = sourceWidget;
 		}
 
+		public Func<Vector2, Vector3> GetBedIntersection
+		{
+			get => TrackBallController.GetBedIntersection;
+			set => TrackBallController.GetBedIntersection = value;
+		}
+
 		public override void OnBoundsChanged(EventArgs e)
 		{
 			Vector2 screenCenter = new Vector2(Width / 2, Height / 2);
@@ -394,7 +400,7 @@ namespace MatterHackers.Agg.OpenGlGui
 		{
 			if (!LockTrackBall && ContainsFirstUnderMouseRecursive())
 			{
-				TrackBallController.OnMouseWheel(mouseEvent.WheelDelta);
+				TrackBallController.OnMouseWheel(mouseEvent.WheelDelta, mouseEvent.Position);
 				Invalidate();
 			}
 			base.OnMouseWheel(mouseEvent);

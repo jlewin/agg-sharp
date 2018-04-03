@@ -52,6 +52,8 @@ namespace MatterHackers.VectorMath.TrackBall
 			this.world = world;
 		}
 
+		public Func<Vector2, Vector3> GetBedIntersection { get; set; }
+
 		public TrackBallTransformType CurrentTrackingType { get; private set; } = TrackBallTransformType.None;
 
 		public static Vector3 MapMoveToSphere(WorldView world, double trackBallRadius, Vector2 startPosition, Vector2 endPosition, bool rotateOnZ)
@@ -219,7 +221,7 @@ namespace MatterHackers.VectorMath.TrackBall
 			CurrentTrackingType = TrackBallTransformType.None;
 		}
 
-		public void OnMouseWheel(int wheelDelta)
+		public void OnMouseWheel(int wheelDelta, Vector2 mousePosition)
 		{
 			double zoomDelta = 1;
 			if (wheelDelta > 0)
@@ -231,8 +233,26 @@ namespace MatterHackers.VectorMath.TrackBall
 				zoomDelta = .8;
 			}
 
-			world.Scale = world.Scale * zoomDelta;
+			if (zoomDelta != 1)
+			{
+				this.ZoomAtMousePosition(mousePosition, zoomDelta);
+			}
+
 			OnTransformChanged(null);
+		}
+
+		private void ZoomAtMousePosition(Vector2 mousePosition, double zoomDelta)
+		{
+			// Bed intersection position before scale
+			Vector3 originalBedPosition = this.GetBedIntersection(mousePosition);
+
+			world.Scale *= zoomDelta;
+
+			// Bed intersection position after scale
+			Vector3 newBedPosition = this.GetBedIntersection(mousePosition);
+
+			// Move to account for difference
+			world.Translate(newBedPosition - originalBedPosition);
 		}
 
 		private void OnTransformChanged(EventArgs x)
