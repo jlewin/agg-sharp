@@ -74,6 +74,7 @@ namespace MatterHackers.ImageProcessing
 			return outputImage;
 		}
 
+		// Keywords to find when searching... opacity/transparency/alpha
 		public static ImageBuffer AjustAlpha(this ImageBuffer sourceImage, double factor)
 		{
 			var outputImage = new ImageBuffer(sourceImage);

@@ -34,6 +34,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using MatterHackers.Agg.Platform;
 using MatterHackers.Agg.UI;
+using MatterHackers.ImageProcessing;
 
 namespace MatterHackers.Agg.Image
 {
@@ -120,6 +121,8 @@ namespace MatterHackers.Agg.Image
 							BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, bitmap.PixelFormat);
 							int sourceIndex = 0;
 							int destIndex = 0;
+
+
 							unsafe
 							{
 								int offset;
@@ -134,7 +137,18 @@ namespace MatterHackers.Agg.Image
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
-										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
+
+										if (GuiWidget.DebugLayout)
+										{
+											// Advance but skip
+											sourceIndex++;
+
+											destBuffer[destIndex++] = 40;
+										}
+										else
+										{
+											destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
+										}
 #else
                                             Color notPreMultiplied = new Color(pSourceBuffer[sourceIndex + 0], pSourceBuffer[sourceIndex + 1], pSourceBuffer[sourceIndex + 2], pSourceBuffer[sourceIndex + 3]);
                                             sourceIndex += 4;
@@ -149,6 +163,11 @@ namespace MatterHackers.Agg.Image
 							}
 
 							bitmap.UnlockBits(bitmapData);
+
+							if (GuiWidget.DebugLayout)
+							{
+								MutedDebugImage(destImage);
+							}
 
 							return true;
 						}
@@ -178,12 +197,18 @@ namespace MatterHackers.Agg.Image
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
 										destBuffer[destIndex++] = pSourceBuffer[sourceIndex++];
-										destBuffer[destIndex++] = 255;
+										destBuffer[destIndex++] = (byte)(GuiWidget.DebugLayout ? 110 : 255);
 									}
 								}
 							}
 
 							bitmap.UnlockBits(bitmapData);
+
+							if (GuiWidget.DebugLayout)
+							{
+								MutedDebugImage(destImage);
+							}
+
 							return true;
 						}
 
@@ -198,7 +223,17 @@ namespace MatterHackers.Agg.Image
 						break;
 				}
 			}
+
 			return false;
+		}
+
+		private static Color debugColor = new Color("#D97E7E");
+
+		private static void MutedDebugImage(ImageBuffer destImage)
+		{
+			var graphics = destImage.NewGraphics2D();
+			graphics.Rectangle(destImage.GetBounds(), debugColor);
+			destImage.SetRecieveBlender(new BlenderPreMultBGRA());
 		}
 
 		private static void Copy8BitDataToImage(ImageBuffer destImage, Bitmap bitmap)

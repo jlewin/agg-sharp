@@ -2573,6 +2573,8 @@ namespace MatterHackers.Agg.UI
 
 		public static bool TouchScreenMode { get; protected set; }
 
+		public static bool DebugLayout { get; } = true;
+
 		internal bool mouseMoveEventHasBeenAcceptedByOther = false;
 		public virtual void OnMouseMove(MouseEventArgs mouseEvent)
 		{

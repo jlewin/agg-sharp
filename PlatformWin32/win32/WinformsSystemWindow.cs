@@ -661,6 +661,14 @@ namespace MatterHackers.Agg.UI
 
 		public void Invalidate(RectangleDouble rectToInvalidate)
 		{
+			string stackTrace = Environment.StackTrace;
+			if (stackTrace.IndexOf("OnDraw", StringComparison.OrdinalIgnoreCase) != -1
+				&& stackTrace.IndexOf("OnLoad", StringComparison.OrdinalIgnoreCase) == -1)
+			{
+				// Never call invalidate from draw?
+				//Debugger.Break();
+			}
+
 			// Ignore problems with buggy WinForms on Linux
 			try
 			{
