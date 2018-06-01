@@ -100,17 +100,27 @@ namespace MatterHackers.DataConverters3D
 			}
 		}
 
-		public static void SaveTo(this IObject3D sourceItem, Stream outputStream, Action<double, string> progress = null)
+		public static void SaveTo(this IObject3D sourceItem, Stream outputStream, IAssetManager assetManager = null, bool publishAssets = false, Action<double, string> progress = null)
 		{
-			sourceItem.PersistAssets(progress);
+			if (assetManager == null)
+			{
+				assetManager = AssetObject3D.AssetManager;
+			}
+
+			sourceItem.PersistAssets(assetManager, progress, publishAssets);
 
 			var streamWriter = new StreamWriter(outputStream);
 			streamWriter.Write(sourceItem.ToJson());
 			streamWriter.Flush();
 		}
 
-		public static async void PersistAssets(this IObject3D sourceItem, Action<double, string> progress = null, bool publishAssets=false)
+		public static async void PersistAssets(this IObject3D sourceItem, IAssetManager assetManager = null, Action<double, string> progress = null, bool publishAssets=false)
 		{
+			if (assetManager == null)
+			{
+				assetManager = AssetObject3D.AssetManager;
+			}
+
 			// Must use DescendantsAndSelf so that leaf nodes save their meshes
 			var persistableItems = from object3D in sourceItem.DescendantsAndSelf()
 										 where object3D.WorldPersistable() &&
@@ -130,7 +140,7 @@ namespace MatterHackers.DataConverters3D
 					// If publishAssets is specified, persist any unsaved IAssetObject items to disk
 					if (item is IAssetObject assetObject && publishAssets)
 					{
-						await AssetObject3D.AssetManager.StoreAsset(assetObject, publishAssets, CancellationToken.None, progress);
+						await assetManager.StoreAsset(assetObject, publishAssets, CancellationToken.None, progress);
 
 						if (string.IsNullOrWhiteSpace(item.MeshPath))
 						{
@@ -145,7 +155,7 @@ namespace MatterHackers.DataConverters3D
 					if (!assetFiles.TryGetValue(hashCode, out string assetPath))
 					{
 						// Store and update cache if missing
-						await AssetObject3D.AssetManager.StoreMesh(item, publishAssets, CancellationToken.None, progress);
+						await assetManager.StoreMesh(item, publishAssets, CancellationToken.None, progress);
 						assetFiles.Add(hashCode, item.MeshPath);
 					}
 					else

@@ -95,12 +95,13 @@ namespace MatterHackers.DataConverters3D
 
 		public bool IsSelected(IObject3D item) => HasSelection && SelectedItem == item;
 
+		// TODO: review how this differs from IObject3D.SaveTo(stream) **********************************
 		public void Save(Stream stream, Action<double, string> progress = null)
 		{
 			// Serialize the scene to disk using a modified Json.net pipeline with custom ContractResolvers and JsonConverters
 			try
 			{
-				this.PersistAssets(progress);
+				this.PersistAssets(progress: progress);
 
 				// Clear the selection before saving
 				List<IObject3D> selectedItems = new List<IObject3D>();
