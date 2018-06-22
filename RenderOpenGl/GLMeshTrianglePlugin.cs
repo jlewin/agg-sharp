@@ -116,6 +116,11 @@ namespace MatterHackers.RenderOpenGl
 			return plugin;
 		}
 
+		public static bool Free(Mesh mesh)
+		{
+			return meshesWithCacheData.Remove(mesh);
+		}
+
 		private GLMeshTrianglePlugin()
 		{
 			// This is private as you can't build one of these. You have to call GetImageGLDisplayListPlugin.

@@ -45,6 +45,8 @@ namespace MatterHackers.PolygonMesh
 
 	public class Mesh
 	{
+		public static event EventHandler MeshFinalized;
+
 		public Dictionary<(Face, int), ImageBuffer> FaceTexture = new Dictionary<(Face, int), ImageBuffer>();
 		public Dictionary<(FaceEdge, int), Vector2> TextureUV = new Dictionary<(FaceEdge, int), Vector2>();
 
@@ -66,6 +68,8 @@ namespace MatterHackers.PolygonMesh
 			{
 				int a = 0;
 			}
+
+			MeshFinalized?.Invoke(this, null);
 		}
 
 		public event EventHandler Changed;
