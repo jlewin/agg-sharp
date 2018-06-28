@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2016, Kevin Pope, John Lewin
+Copyright (c) 2018, Kevin Pope, John Lewin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,44 +27,13 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
 
-using System.Collections.Generic;
-
 namespace MatterHackers.Agg.UI
 {
 	public static class ActiveTheme
 	{
 		public static RootedObjectEventHandler ThemeChanged = new RootedObjectEventHandler();
-		
-		private readonly static List<IThemeColors> themeColors = new List<IThemeColors>()
-		{
-			//Dark themes
-			ThemeColors.Create("Red - Dark", new Color(172, 25, 61)),
-			ThemeColors.Create("Pink - Dark", new Color(220, 79, 173)),
-			ThemeColors.Create("Orange - Dark", new Color(255, 129, 25)),
-			ThemeColors.Create("Green - Dark", new Color(0, 138, 23)),
-			ThemeColors.Create("Blue - Dark", new Color(0, 75, 139)),
-			ThemeColors.Create("Teal - Dark", new Color(0, 130, 153)),
-			ThemeColors.Create("Light Blue - Dark", new Color(93, 178, 255)),
-			ThemeColors.Create("Purple - Dark", new Color(70, 23, 180)),
-			ThemeColors.Create("Magenta - Dark", new Color(140, 0, 149)),
-			ThemeColors.Create("Grey - Dark", new Color(88, 88, 88)),
 
-			//Light themes
-			ThemeColors.Create("Red - Light", new Color(172, 25, 61), false),
-			ThemeColors.Create("Pink - Light", new Color(220, 79, 173), false),
-			ThemeColors.Create("Orange - Light", new Color(255, 129, 25), false),
-			ThemeColors.Create("Green - Light", new Color(0, 138, 23), false),
-			ThemeColors.Create("Blue - Light", new Color(0, 75, 139), false),
-			ThemeColors.Create("Teal - Light", new Color(0, 130, 153), false),
-			ThemeColors.Create("Light Blue - Light", new Color(93, 178, 255), false),
-			ThemeColors.Create("Purple - Light", new Color(70, 23, 180), false),
-			ThemeColors.Create("Magenta - Light", new Color(140, 0, 149), false),
-			ThemeColors.Create("Grey - Light", new Color(88, 88, 88), false),
-		};
-
-		private static IThemeColors activeTheme = themeColors[0];
-
-		public static List<IThemeColors> AvailableThemes => themeColors;
+		private static IThemeColors activeTheme = ThemeColors.Create("Red - Dark", new Color(172, 25, 61));
 
 		public static IThemeColors Instance
 		{
@@ -77,19 +46,6 @@ namespace MatterHackers.Agg.UI
 					OnThemeChanged();
 				}
 			}
-		}
-
-		public static IThemeColors GetThemeColors(string name)
-		{
-			foreach (var colors in AvailableThemes)
-			{
-				if (colors.Name == name)
-				{
-					return colors;
-				}
-			}
-
-			return AvailableThemes[0];
 		}
 
 		private static void OnThemeChanged()

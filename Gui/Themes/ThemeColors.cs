@@ -28,6 +28,7 @@ either expressed or implied, of the FreeBSD Project.
 */
 
 using System;
+using Newtonsoft.Json;
 
 namespace MatterHackers.Agg.UI
 {
@@ -53,41 +54,28 @@ namespace MatterHackers.Agg.UI
 
 		public Color SourceColor { get; private set; }
 
-		public static ThemeColors Create(string name, Color primary, bool darkTheme = true)
+		public static ThemeColors Create(string name, Color accentColor, bool darkTheme = true)
 		{
-			var color = new ThemeColors
+			var primaryBackgroundColor = new Color(darkTheme ? "#444" : "#D0D0D0");
+
+			return new ThemeColors
 			{
 				IsDarkTheme = darkTheme,
 				Name = name,
-				SourceColor = primary
+				SourceColor = accentColor,
+				PrimaryBackgroundColor = primaryBackgroundColor,
+				SecondaryBackgroundColor = new Color(darkTheme ? "#333" : "#B9B9B9"),
+				TertiaryBackgroundColor = new Color(darkTheme ? "#3E3E3E" : "#BEBEBE"),
+				PrimaryTextColor = new Color(darkTheme ? "#FFFFFF" : "#222"),
+				SecondaryTextColor = new Color(darkTheme ? "#C8C8C8" : "#333"),
+
+				PrimaryAccentColor = GetAdjustedAccentColor(accentColor, primaryBackgroundColor)
 			};
+		}
 
-			if (darkTheme)
-			{
-				color.PrimaryAccentColor = primary;
-
-				color.PrimaryBackgroundColor = new Color(68, 68, 68);
-				color.SecondaryBackgroundColor = new Color(51, 51, 51);
-				color.PrimaryTextColor = new Color(255, 255, 255);
-				color.SecondaryTextColor = new Color(200, 200, 200);
-
-				color.TertiaryBackgroundColor = new Color(62, 62, 62);
-			}
-			else
-			{
-				color.PrimaryAccentColor = primary;
-
-				color.PrimaryBackgroundColor = new Color(208, 208, 208);
-				color.SecondaryBackgroundColor = new Color(185, 185, 185);
-				color.PrimaryTextColor = new Color(34, 34, 34);
-				color.SecondaryTextColor = new Color(51, 51, 51);
-
-				color.TertiaryBackgroundColor = new Color(190, 190, 190);
-			}
-
-			color.PrimaryAccentColor = color.PrimaryAccentColor.AdjustContrast(color.PrimaryBackgroundColor).ToColor();
-
-			return color;
+		public static Color GetAdjustedAccentColor(Color accentColor, Color backgroundColor)
+		{
+			return accentColor.AdjustContrast(backgroundColor).ToColor();
 		}
 	}
 }
