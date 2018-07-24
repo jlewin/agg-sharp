@@ -26,15 +26,13 @@ namespace MatterHackers.Agg
 
 			assemblyAndTypes = new Dictionary<Assembly, List<Type>>();
 
-			string searchPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-			string[] dllFiles = Directory.GetFiles(searchPath, "*.dll");
-			string[] exeFiles = Directory.GetFiles(searchPath, "*.exe");
+			string[] dllFiles = Directory.GetFiles(".", "*.dll");
+			string[] exeFiles = Directory.GetFiles(".", "*.exe");
 
 			List<string> allFiles = new List<string>();
 			allFiles.AddRange(dllFiles);
 			allFiles.AddRange(exeFiles);
-			string[] files = allFiles.ToArray();
+			string[] files = allFiles.Select(f => Path.GetFullPath(f)).ToArray();
 
 			foreach (var file in files)
 			{
@@ -167,7 +165,7 @@ namespace MatterHackers.Agg
 
 					foreach (var type in keyValue.Value)
 					{
-						if (targetType.IsInterface && targetType.IsAssignableFrom(type) 
+						if (targetType.IsInterface && targetType.IsAssignableFrom(type)
 							|| type.BaseType == typeof(T))
 						{
 							constructedTypes.Add((T)Activator.CreateInstance(type));
