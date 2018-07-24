@@ -30,54 +30,21 @@ either expressed or implied, of the FreeBSD Project.
 using Microsoft.VisualBasic.Devices;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace MatterHackers.Agg.Platform
 {
 	public class WinformsInformationProvider : IOsInformationProvider
 	{
-		//From Managed.Windows.Forms/XplatUI
-		[DllImport("libc")]
-		private static extern int uname(IntPtr buf);
-
-		private static bool IsRunningOnMac()
-		{
-			IntPtr buf = IntPtr.Zero;
-			try
-			{
-				buf = Marshal.AllocHGlobal(8192);
-				// This is a hacktastic way of getting sysname from uname ()
-				if (uname(buf) == 0)
-				{
-					string os = Marshal.PtrToStringAnsi(buf);
-					if (os == "Darwin")
-					{
-						return true;
-					}
-				}
-			}
-			catch
-			{
-			}
-			finally
-			{
-				if (buf != IntPtr.Zero)
-				{
-					Marshal.FreeHGlobal(buf);
-				}
-			}
-			return false;
-		}
-
 		public WinformsInformationProvider()
 		{
-			this.OperatingSystem = GetOSType();
+			this.OperatingSystem = OSType.X11;
 
 			var size = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Size;
 			this.DesktopSize = new Point2D(size.Width, size.Height);
 		}
 
 		public OSType OperatingSystem { get; }
+
 		public Point2D DesktopSize { get; }
 
 		public long PhysicalMemory
@@ -86,26 +53,6 @@ namespace MatterHackers.Agg.Platform
 			{
 				var computerInfo = new ComputerInfo();
 				return (long)computerInfo.TotalPhysicalMemory;
-			}
-		}
-
-		private OSType GetOSType()
-		{
-			if (Path.DirectorySeparatorChar == '\\')
-			{
-				return OSType.Windows;
-			}
-			else if (IsRunningOnMac())
-			{
-				return OSType.Mac;
-			}
-			else if (Environment.OSVersion.Platform == PlatformID.Unix)
-			{
-				return OSType.X11;
-			}
-			else
-			{
-				return OSType.Other;
 			}
 		}
 	}
