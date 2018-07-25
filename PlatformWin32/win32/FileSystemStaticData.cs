@@ -66,12 +66,16 @@ namespace MatterHackers.Agg
 			Console.WriteLine(localPath);
 			Console.WriteLine(startupPath);
 
+			if (startupPath = "/usr/lib")
+			{
+				startupPath = "/usr/bin";
+			}
+
 			foreach(DictionaryEntry e in System.Environment.GetEnvironmentVariables())
 			{
 			    Console.WriteLine(e.Key  + ":" + e.Value);
 			}
 
-			string appPathAndFile = Assembly.GetExecutingAssembly().Location;
 			string pathToAppFolder = startupPath; //Path.GetDirectoryName(appPathAndFile);
 
 			this.basePath = Path.Combine(pathToAppFolder, "StaticData");
