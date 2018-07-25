@@ -53,7 +53,7 @@ namespace MatterHackers.Agg
 			var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
 			var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-			string codeBase = entryAssembly.CodeBase;
+			string codeBase = executingAssembly.CodeBase;
 			string localPath = new Uri(codeBase).LocalPath;
 			string startupPath = Path.GetDirectoryName(localPath);
 
