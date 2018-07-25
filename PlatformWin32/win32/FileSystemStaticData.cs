@@ -66,7 +66,7 @@ namespace MatterHackers.Agg
 			Console.WriteLine(localPath);
 			Console.WriteLine(startupPath);
 
-			if (startupPath = "/usr/lib")
+			if (startupPath == "/usr/lib")
 			{
 				startupPath = "/usr/bin";
 			}
