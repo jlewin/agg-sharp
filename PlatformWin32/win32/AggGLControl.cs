@@ -44,7 +44,7 @@ namespace MatterHackers.Agg.UI
 
 		// If you have an error here it is likely that you need to build your project with Platform Target x86.
 		public AggGLControl()
-			: base(new OpenTK.Graphics.GraphicsMode(32, 24, 0, 8))
+			: base(new OpenTK.Graphics.GraphicsMode())
 		{
 			if (!checkedCapabilities)
 			{
