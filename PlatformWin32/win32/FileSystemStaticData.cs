@@ -49,8 +49,17 @@ namespace MatterHackers.Agg
 
 		public FileSystemStaticData()
 		{
+			string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+			string localPath = new Uri(codeBase).LocalPath;
+			string startupPath = Path.GetDirectoryName(localPath);
+
+			Console.WriteLine("CodeBase: " + codeBase);
+			Console.WriteLine("EntryAssemblyCodeBase: " + System.Reflection.Assembly.GetEntryAssembly().CodeBase);
+			Console.WriteLine(localPath);
+			Console.WriteLine(startupPath);
+
 			string appPathAndFile = Assembly.GetExecutingAssembly().Location;
-			string pathToAppFolder = Path.GetDirectoryName(appPathAndFile);
+			string pathToAppFolder = startupPath; //Path.GetDirectoryName(appPathAndFile);
 
 			this.basePath = Path.Combine(pathToAppFolder, "StaticData");
 
