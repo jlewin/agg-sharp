@@ -53,23 +53,17 @@ namespace MatterHackers.Agg
 			var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
 			var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-			string codeBase = executingAssembly.CodeBase;
+			string codeBase = entryAssembly.CodeBase;
 			string localPath = new Uri(codeBase).LocalPath;
 			string startupPath = Path.GetDirectoryName(localPath);
 
-			Console.WriteLine("EntryAssm CodeBase: " + entryAssembly.CodeBase);
-			Console.WriteLine("ExeAssm CodeBase: " + executingAssembly.CodeBase);
-
-			Console.WriteLine("EntryAssm Location: " + entryAssembly.Location);
-			Console.WriteLine("ExeAssm Location: " + executingAssembly.Location);
+			Console.WriteLine("Entry CodeBase: " + entryAssembly.CodeBase);
+			Console.WriteLine("Exe   CodeBase: " + executingAssembly.CodeBase);
+			Console.WriteLine("Entry Location: " + entryAssembly.Location);
+			Console.WriteLine("Exe   Location: " + executingAssembly.Location);
 
 			Console.WriteLine(localPath);
 			Console.WriteLine(startupPath);
-
-			if (startupPath == "/usr/lib")
-			{
-				startupPath = "/usr/bin";
-			}
 
 			foreach(DictionaryEntry e in System.Environment.GetEnvironmentVariables())
 			{
