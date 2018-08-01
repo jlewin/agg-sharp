@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatterHackers.LocalizeAnalyzer", "MatterHackers.LocalizeAnalyzer\MatterHackers.LocalizeAnalyzer\MatterHackers.LocalizeAnalyzer.csproj", "{BBE93B1E-3D2C-4B09-9656-16595535325F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatterHackers.LocalizeAnalyzer.Test", "MatterHackers.LocalizeAnalyzer\MatterHackers.LocalizeAnalyzer.Test\MatterHackers.LocalizeAnalyzer.Test.csproj", "{9F7047C5-4139-4EBD-A67B-17334B9792DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatterHackers.LocalizeAnalyzer.Vsix", "MatterHackers.LocalizeAnalyzer\MatterHackers.LocalizeAnalyzer.Vsix\MatterHackers.LocalizeAnalyzer.Vsix.csproj", "{316A9ABA-BA72-4A2F-9E40-85774437E8BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBE93B1E-3D2C-4B09-9656-16595535325F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBE93B1E-3D2C-4B09-9656-16595535325F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBE93B1E-3D2C-4B09-9656-16595535325F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBE93B1E-3D2C-4B09-9656-16595535325F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F7047C5-4139-4EBD-A67B-17334B9792DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F7047C5-4139-4EBD-A67B-17334B9792DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F7047C5-4139-4EBD-A67B-17334B9792DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F7047C5-4139-4EBD-A67B-17334B9792DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C822E3A1-E504-48F7-9746-8AA7590F363A}
+	EndGlobalSection
+EndGlobal

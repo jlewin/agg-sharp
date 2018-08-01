@@ -35,20 +35,6 @@ using System.IO;
 namespace MatterHackers.Localizations
 {
 	[DebuggerStepThrough]
-	public static class TranslationMapExtensions
-	{
-		public static string Localize(this string englishString)
-		{
-			if (TranslationMap.ActiveTranslationMap != null)
-			{
-				return TranslationMap.ActiveTranslationMap.Translate(englishString);
-			}
-
-			return englishString;
-		}
-	}
-
-	[DebuggerStepThrough]
 	public class TranslationMap
 	{
 		private const string englishTag = "English:";
