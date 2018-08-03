@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatterHackers.LocalizeAnaly
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatterHackers.LocalizeAnalyzer.Test", "MatterHackers.LocalizeAnalyzer.Test\MatterHackers.LocalizeAnalyzer.Test.csproj", "{40AC84DF-194A-4693-9FD0-120F98B29164}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatterHackers.LocalizeAnalyzer.Vsix", "MatterHackers.LocalizeAnalyzer.Vsix\MatterHackers.LocalizeAnalyzer.Vsix.csproj", "{316A9ABA-BA72-4A2F-9E40-85774437E8BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{40AC84DF-194A-4693-9FD0-120F98B29164}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40AC84DF-194A-4693-9FD0-120F98B29164}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40AC84DF-194A-4693-9FD0-120F98B29164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{316A9ABA-BA72-4A2F-9E40-85774437E8BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
