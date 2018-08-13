@@ -53,11 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MSIntPointPathVisualizer.cs" />
     <Compile Include="PlatingHelper.cs" />
     <Compile Include="IntPointPathVisualizer.cs" />
+    <Compile Include="PolygonsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MatterSlice\MSClipperLib\MSClipperLib.csproj">
+      <Project>{2C564BE1-352D-4DDB-8226-F0981F983C60}</Project>
+      <Name>MSClipperLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\agg\Agg.csproj">
       <Project>{657dbc6d-c3ea-4398-a3fa-ddb73c14f71b}</Project>
       <Name>Agg</Name>
