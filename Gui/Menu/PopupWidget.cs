@@ -248,20 +248,25 @@ namespace MatterHackers.Agg.UI
 			windowToAddTo = widgetRelativeTo.Parents<SystemWindow>().FirstOrDefault();
 			windowToAddTo?.AddChild(popupWidget);
 
-			GuiWidget topParent = widgetRelativeTo.Parent;
-			while (topParent.Parent != null
-				&& topParent as SystemWindow == null)
+            GuiWidget parent = widgetRelativeTo.Parent;
+
+			while (parent.Parent != null)
 			{
 				// Regrettably we don't know who it is that is the window that will actually think it is moving relative to its parent
 				// but we need to know anytime our widgetRelativeTo has been moved by any change, so we hook them all.
-				if (!hookedParents.Contains(topParent))
+				if (!hookedParents.Contains(parent))
 				{
-					hookedParents.Add(topParent);
-					topParent.PositionChanged += widgetRelativeTo_PositionChanged;
-					topParent.BoundsChanged += widgetRelativeTo_PositionChanged;
+					hookedParents.Add(parent);
+					parent.PositionChanged += widgetRelativeTo_PositionChanged;
+					parent.BoundsChanged += widgetRelativeTo_PositionChanged;
 				}
 
-				topParent = topParent.Parent;
+				parent = parent.Parent;
+
+                if (parent is SystemWindow systemWindow)
+                {
+                    break;
+                }
 			}
 
 			widgetRelativeTo_PositionChanged(widgetRelativeTo, null);
