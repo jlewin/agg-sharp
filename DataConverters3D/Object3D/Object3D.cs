@@ -209,6 +209,8 @@ namespace MatterHackers.DataConverters3D
 
 						Invalidate(new InvalidateArgs(this, InvalidateType.Mesh, null));
 
+						this.OnMeshAssigned();
+
 						AsyncCleanAndMerge();
 					}
 				}
@@ -497,9 +499,15 @@ namespace MatterHackers.DataConverters3D
 				if (_mesh != mesh)
 				{
 					_mesh = mesh;
+
+					this.OnMeshAssigned();
 					AsyncCleanAndMerge();
 				}
 			}
+		}
+
+		protected virtual void OnMeshAssigned()
+		{
 		}
 
 		public virtual void OnInvalidate(InvalidateArgs invalidateType)
