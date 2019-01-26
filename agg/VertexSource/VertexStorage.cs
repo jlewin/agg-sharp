@@ -44,20 +44,15 @@ namespace MatterHackers.Agg.VertexSource
 
 		private class VertexDataManager
 		{
-			private int allocatedVertices;
-			private VertexData[] vertexData;
-			private int numVertices;
+			private List<VertexData> vertexData = new List<VertexData>();
+
 			public VertexDataManager()
 			{
 			}
 
-			public void AddVertex(double x, double y, ShapePath.FlagsAndCommand CommandAndFlags, int index = -1)
+			public void AddVertex(double x, double y, ShapePath.FlagsAndCommand CommandAndFlags)
 			{
-				index = index == -1 ? numVertices : index;
-				allocate_if_required(numVertices);
-				vertexData[index] = new VertexData(CommandAndFlags, x, y);
-
-				numVertices++;
+				vertexData.Add(new VertexData(CommandAndFlags, x, y));
 			}
 
 			public ShapePath.FlagsAndCommand command(int index)
@@ -67,13 +62,14 @@ namespace MatterHackers.Agg.VertexSource
 
 			public void free_all()
 			{
-				vertexData = null;
-				numVertices = 0;
+				vertexData.Clear();
 			}
+
+			private int numVertices => vertexData.Count;
 
 			public ShapePath.FlagsAndCommand last_command()
 			{
-				if (numVertices != 0)
+				if ( numVertices != 0)
 				{
 					return command(numVertices - 1);
 				}
@@ -116,18 +112,21 @@ namespace MatterHackers.Agg.VertexSource
 
 			public void modify_command(int index, ShapePath.FlagsAndCommand CommandAndFlags)
 			{
-				this.vertexData[index].command = CommandAndFlags;
+				var xxx = vertexData[index];
+				xxx.command = CommandAndFlags;
 			}
 
 			public void modify_vertex(int index, double x, double y)
 			{
-				vertexData[index].position = new Vector2(x, y);
+				var xxx = vertexData[index];
+				xxx.position = new Vector2(x, y);
 			}
 
 			public void modify_vertex(int index, double x, double y, ShapePath.FlagsAndCommand CommandAndFlags)
 			{
-				vertexData[index].position = new Vector2(x, y);
-				vertexData[index].command = CommandAndFlags;
+				var xxx = vertexData[index];
+				xxx.position = new Vector2(x, y);
+				xxx.command = CommandAndFlags;
 			}
 
 			public ShapePath.FlagsAndCommand prev_vertex(out double x, out double y)
@@ -144,7 +143,7 @@ namespace MatterHackers.Agg.VertexSource
 
 			public void remove_all()
 			{
-				numVertices = 0;
+				vertexData.Clear();
 			}
 
 			public int size()
@@ -170,32 +169,6 @@ namespace MatterHackers.Agg.VertexSource
 				y = vertexData[index].position.Y;
 				return vertexData[index].command;
 			}
-
-			private void allocate_if_required(int indexToAdd)
-			{
-				if (indexToAdd < numVertices)
-				{
-					return;
-				}
-
-				while (indexToAdd >= allocatedVertices)
-				{
-					int newSize = allocatedVertices + 256;
-					VertexData[] newVertexData = new VertexData[newSize];
-
-					if (vertexData != null)
-					{
-						for (int i = 0; i < numVertices; i++)
-						{
-							newVertexData[i] = vertexData[i];
-						}
-					}
-
-					vertexData = newVertexData;
-
-					allocatedVertices = newSize;
-				}
-			}
 		}
 
 		#endregion InternalVertexStorage
@@ -212,7 +185,6 @@ namespace MatterHackers.Agg.VertexSource
 		{
 			SvgDString = svgDString;
 		}
-
 
 		[JsonIgnore]
 		public int Count
@@ -598,21 +570,21 @@ namespace MatterHackers.Agg.VertexSource
 
 		public void invert_polygon(int start)
 		{
-			// Skip all non-vertices at the beginning
-			while (start < vertexDataManager.total_vertices() &&
-				  !ShapePath.is_vertex(vertexDataManager.command(start))) ++start;
+			//// Skip all non-vertices at the beginning
+			//while (start < vertexDataManager.total_vertices() &&
+			//	  !ShapePath.is_vertex(vertexDataManager.command(start))) ++start;
 
-			// Skip all insignificant move_to
-			while (start + 1 < vertexDataManager.total_vertices() &&
-				  ShapePath.is_move_to(vertexDataManager.command(start)) &&
-				  ShapePath.is_move_to(vertexDataManager.command(start + 1))) ++start;
+			//// Skip all insignificant move_to
+			//while (start + 1 < vertexDataManager.total_vertices() &&
+			//	  ShapePath.is_move_to(vertexDataManager.command(start)) &&
+			//	  ShapePath.is_move_to(vertexDataManager.command(start + 1))) ++start;
 
-			// Find the last vertex
-			int end = start + 1;
-			while (end < vertexDataManager.total_vertices() &&
-				  !ShapePath.is_next_poly(vertexDataManager.command(end))) ++end;
+			//// Find the last vertex
+			//int end = start + 1;
+			//while (end < vertexDataManager.total_vertices() &&
+			//	  !ShapePath.is_next_poly(vertexDataManager.command(end))) ++end;
 
-			invert_polygon(start, end);
+			//invert_polygon(start, end);
 		}
 
 		//--------------------------------------------------------------------
@@ -695,14 +667,14 @@ namespace MatterHackers.Agg.VertexSource
 			vertexDataManager.modify_vertex(index, x, y, PathAndFlags);
 		}
 
-		public void MoveTo(Vector2 position, int index = -1)
+		public void MoveTo(Vector2 position)
 		{
-			MoveTo(position.X, position.Y, index);
+			MoveTo(position.X, position.Y);
 		}
 
-		public void MoveTo(double x, double y, int index = -1)
+		public void MoveTo(double x, double y)
 		{
-			vertexDataManager.AddVertex(x, y, ShapePath.FlagsAndCommand.MoveTo, index);
+			vertexDataManager.AddVertex(x, y, ShapePath.FlagsAndCommand.MoveTo);
 		}
 
 		public string SvgDString
@@ -985,7 +957,8 @@ namespace MatterHackers.Agg.VertexSource
 				parseIndex++;
 			}
 
-			if (validNumberStartingCharacters.Contains(dString[parseIndex]))
+			if (parseIndex < dString.Length
+				&& validNumberStartingCharacters.Contains(dString[parseIndex]))
 			{
 				return true;
 			}
