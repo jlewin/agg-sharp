@@ -40,8 +40,9 @@ namespace MatterHackers.Agg.VertexSource
 		{
 		}
 
-		public ShapePath.FlagsAndCommand command { get; set; }
-		public Vector2 position { get; set; }
+		public ShapePath.FlagsAndCommand command;
+
+		public Vector2 position;
 
 		[JsonIgnore]
 		public bool IsMoveTo => ShapePath.is_move_to(command);
@@ -54,6 +55,15 @@ namespace MatterHackers.Agg.VertexSource
 
 		[JsonIgnore]
 		public bool IsStop => ShapePath.is_stop(command);
+
+		[JsonIgnore]
+		public bool IsVertex => ShapePath.is_vertex(command);
+
+		[JsonIgnore]
+		public double X => position.X;
+
+		[JsonIgnore]
+		public double Y => position.Y;
 
 		public override string ToString()
 		{
@@ -137,10 +147,14 @@ namespace MatterHackers.Agg.VertexSource
 		public static RectangleDouble GetBounds(this IVertexSource source)
 		{
 			RectangleDouble bounds = RectangleDouble.ZeroIntersection;
+
 			foreach (var vertex in source.Vertices())
 			{
-				if (!vertex.IsClose && !vertex.IsStop)
+				// Reads up to the first Close command - ignoring any further commands
+				//if (!vertex.IsClose && !vertex.IsStop)
+				if (!vertex.IsStop)
 				{
+						Console.WriteLine("Expand: " + vertex.position);
 					bounds.ExpandToInclude(vertex.position);
 				}
 			}

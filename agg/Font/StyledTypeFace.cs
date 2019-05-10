@@ -200,6 +200,7 @@ namespace MatterHackers.Agg.Font
 			}
 
 			glyphForCharacter.rewind(0);
+
 			double x, y;
 
 			ShapePath.FlagsAndCommand curCommand = glyphForCharacter.vertex(out x, out y);

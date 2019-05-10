@@ -300,6 +300,11 @@ namespace MatterHackers.Agg.VertexSource
 			vertexDataManager.AddVertex(x, y, flagsAndCommand);
 		}
 
+		public void Add(VertexData vertexData)
+		{
+			vertexDataManager.AddVertex(vertexData.position.X, vertexData.position.Y, vertexData.command);
+		}
+
 		public int arrange_orientations(int start, ShapePath.FlagsAndCommand orientation)
 		{
 			if (orientation != ShapePath.FlagsAndCommand.FlagNone)

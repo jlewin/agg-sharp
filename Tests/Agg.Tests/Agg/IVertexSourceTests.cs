@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MatterHackers.Agg.Font;
 using MatterHackers.Agg.VertexSource;
+using MatterHackers.VectorMath;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -13,6 +15,53 @@ namespace MatterHackers.Agg.Tests
 	[TestFixture]
 	public class IVertexSourceTests
 	{
+
+
+		[Test]
+		public void CharacterBoundsTest2()
+		{
+			var typeface = new StyledTypeFace(LiberationSansFont.Instance, 12);
+			typeface.GetImageForCharacter(' ', 0, 0, Color.Blue);
+		}
+
+
+		[Test]
+		public void VerticiesAreEqualTest()
+		{
+			int fontSize = 12;
+
+			var typeface = new StyledTypeFace(LiberationSansFont.Instance, fontSize);
+
+			string filename = $"{nameof(LiberationSansFont)}-{fontSize}.json";
+
+			string testDataPath = TestContext.CurrentContext.ResolveProjectPath(4, "Tests", "TestData", filename);
+
+			IVertexSource vertexSource = typeface.GetGlyphForCharacter('@');
+
+			// Validates the .Vertices interface results matches classic vertex(x,y) results
+			var vertices1 = vertexSource.Vertices().ToList();
+			var vertices2 = new List<VertexData>();
+
+			ShapePath.FlagsAndCommand curCommand;
+
+			do
+			{
+				curCommand = vertexSource.vertex(out double x, out double y);
+				vertices2.Add(new VertexData(curCommand, x, y));
+			} while (curCommand != ShapePath.FlagsAndCommand.Stop);
+
+			Assert.AreEqual(vertices1.Count(), vertices2.Count(), "Result counts should match");
+
+			for (int i = 0; i < vertices1.Count(); i++)
+			{
+				var a = vertices1[i];
+				var b = vertices2[i];
+
+				Assert.AreEqual(a.command, b.command, "Command types should match");
+				Assert.AreEqual(a.position, b.position, "Positions should match");
+			}
+		}
+
 		[Test]
 		public void CharacterBoundsTest()
 		{
@@ -28,7 +77,9 @@ namespace MatterHackers.Agg.Tests
 			string testDataPath = TestContext.CurrentContext.ResolveProjectPath(4, "Tests", "TestData", filename);
 
 			// Project sample string characters to dictionary with character bounds
-			var characterBounds = sampleCharacters.ToDictionary(c => c, c => GetCharacterBounds(c, typeface));
+			var characterBounds = sampleCharacters.ToDictionary(
+				c => c,
+				c => GetCharacterBounds(c, typeface));
 
 			var jsonSettings = new JsonSerializerSettings()
 			{
@@ -78,10 +129,35 @@ namespace MatterHackers.Agg.Tests
 
 			var bounds = new RectangleDouble(x, y, x, y);
 
+			Debug.WriteLine("Init: " + bounds);
+
+			// Reads up to the first Stop command - ignoring any further commands
 			while (curCommand != ShapePath.FlagsAndCommand.Stop)
 			{
+				Debug.WriteLine("Expand: " + new Vector2(x, y) + curCommand);
+
 				bounds.ExpandToInclude(x, y);
 				curCommand = glyphForCharacter.vertex(out x, out y);
+			}
+			Debug.WriteLine("\r\n--------5555555555555555----------");
+
+
+
+
+			var bounds2 = GetCharacterBounds2(character , typeface);
+
+			Console.WriteLine("\r\n------------------");
+
+			return bounds2;
+		}
+
+		private static RectangleDouble GetCharacterBounds2(char character, StyledTypeFace typeface)
+		{
+			var bounds = typeface.GetGlyphForCharacter(character).GetBounds();
+
+			if (bounds == RectangleDouble.ZeroIntersection)
+			{
+				bounds = default(RectangleDouble);
 			}
 
 			return bounds;

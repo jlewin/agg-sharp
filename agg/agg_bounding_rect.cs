@@ -26,9 +26,7 @@ namespace MatterHackers.Agg
 {
 	static public class bounding_rect
 	{
-		public static bool get_bounding_rect(VertexStorage vs, int[] gi,
-						   int start, int num,
-						   out double x1, out double y1, out double x2, out double y2)
+		public static bool get_bounding_rect(VertexStorage vs, int[] gi, int start, int num, out double x1, out double y1, out double x2, out double y2)
 		{
 			int i;
 			double x = 0;
@@ -69,9 +67,7 @@ namespace MatterHackers.Agg
 			return x1 <= x2 && y1 <= y2;
 		}
 
-		public static bool get_bounding_rect(VertexStorage vs, int[] gi,
-						   int start, int num,
-						   out RectangleDouble boundingRect)
+		public static bool get_bounding_rect(VertexStorage vs, int[] gi, int start, int num, out RectangleDouble boundingRect)
 		{
 			return get_bounding_rect(vs, gi, start, num, out boundingRect.Left, out boundingRect.Bottom, out boundingRect.Right, out boundingRect.Top);
 		}
@@ -89,11 +85,11 @@ namespace MatterHackers.Agg
 
 		//-----------------------------------------------------bounding_rect_single
 		//template<class VertexSource, class CoordT>
-		public static bool bounding_rect_single(IVertexSource vs, int path_id,
-								  out double x1, out double y1, out double x2, out double y2)
+		public static bool bounding_rect_single(IVertexSource vs, int path_id, out double x1, out double y1, out double x2, out double y2)
 		{
 			double x = 0;
 			double y = 0;
+
 			bool first = true;
 
 			x1 = 1;
@@ -101,18 +97,25 @@ namespace MatterHackers.Agg
 			x2 = 0;
 			y2 = 0;
 
-			vs.rewind(path_id);
-			ShapePath.FlagsAndCommand PathAndFlags;
-			while (!ShapePath.is_stop(PathAndFlags = vs.vertex(out x, out y)))
+			foreach (var vertex in vs.Vertices())
 			{
-				if (ShapePath.is_vertex(PathAndFlags))
+				if (vertex.IsStop)
 				{
+					break;
+				}
+
+				if (vertex.IsVertex)
+				{
+					x = vertex.X;
+					y = vertex.Y;
+
 					if (first)
 					{
 						x1 = x;
 						y1 = y;
 						x2 = x;
 						y2 = y;
+
 						first = false;
 					}
 					else
@@ -124,6 +127,7 @@ namespace MatterHackers.Agg
 					}
 				}
 			}
+
 			return x1 <= x2 && y1 <= y2;
 		}
 	}
