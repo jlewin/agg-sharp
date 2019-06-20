@@ -62,7 +62,17 @@ namespace MatterHackers.Agg.UI
 		public Orientation Orientation
 		{
 			get => splitterBar.Orientation;
-			set => splitterBar.Orientation = value;
+			set
+			{
+				if (splitterBar.Orientation != value)
+				{
+					var size = this.SplitterSize;
+					splitterBar.Orientation = value;
+
+					// Reset size after orientation change
+					this.SplitterSize = size;
+				}
+			}
 		}
 
 		public GuiWidget Panel1 { get; } = new GuiWidget();
