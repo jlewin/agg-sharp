@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2017, Lars Brubaker, John Lewin
+Copyright (c) 2019, Lars Brubaker, John Lewin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,14 +27,16 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
 
-using MatterHackers.VectorMath;
 using System;
+using MatterHackers.VectorMath;
 
 namespace MatterHackers.Agg.UI
 {
 	public class Splitter : GuiWidget
 	{
-		private SplitterBar splitterBar;
+		private double _panel1Ratio = 0;
+		private readonly SplitterBar splitterBar;
+		private bool ajustingRatio = false;
 
 		private double _splitterDistance;
 
@@ -59,15 +61,8 @@ namespace MatterHackers.Agg.UI
 
 		public Orientation Orientation
 		{
-			get
-			{
-				return splitterBar.Orientation;
-			}
-
-			set
-			{
-				splitterBar.Orientation = value;
-			}
+			get => splitterBar.Orientation;
+			set => splitterBar.Orientation = value;
 		}
 
 		public GuiWidget Panel1 { get; } = new GuiWidget();
@@ -109,11 +104,10 @@ namespace MatterHackers.Agg.UI
 						}
 					}
 
-					if(GuiWidget.DefaultEnforceIntegerBounds)
+					if (GuiWidget.DefaultEnforceIntegerBounds)
 					{
 						_splitterDistance = Math.Round(_splitterDistance);
 					}
-
 
 					if (!ajustingRatio)
 					{
@@ -123,14 +117,9 @@ namespace MatterHackers.Agg.UI
 			}
 		}
 
-		double _panel1Ratio = 0;
 		public double Panel1Ratio
 		{
-			get
-			{
-				return _panel1Ratio;
-			}
-
+			get => _panel1Ratio;
 			set
 			{
 				if (_panel1Ratio != value)
@@ -146,15 +135,7 @@ namespace MatterHackers.Agg.UI
 
 		public double SplitterSize
 		{
-			get
-			{
-				if (Orientation == Orientation.Vertical)
-				{
-					return splitterBar.Width;
-				}
-
-				return splitterBar.Height;
-			}
+			get => (Orientation == Orientation.Vertical) ? splitterBar.Width : splitterBar.Height;
 			set
 			{
 				if (Orientation == Orientation.Vertical)
@@ -176,11 +157,9 @@ namespace MatterHackers.Agg.UI
 			}
 		}
 
-		bool ajustingRatio = false;
-
 		public override void OnBoundsChanged(EventArgs e)
 		{
-			if(Panel1Ratio != 0
+			if (Panel1Ratio != 0
 				&& Height > 0)
 			{
 				ajustingRatio = true;
@@ -215,31 +194,25 @@ namespace MatterHackers.Agg.UI
 
 		private class SplitterBar : GuiWidget
 		{
-			private Vector2 DownPosition;
+			private Vector2 downPosition;
 			private bool mouseDownOnBar = false;
 			private double mouseDownPosition = -1;
-			private Splitter parentSplitter;
-			private Orientation _orientation =  Orientation.Vertical;
+			private readonly Splitter parentSplitter;
+			private Orientation _orientation = Orientation.Vertical;
+
 			public Orientation Orientation
 			{
-				get { return _orientation; }
+				get => _orientation;
 				set
 				{
 					_orientation = value;
-					if (value == Orientation.Vertical)
-					{
-						this.Cursor = Cursors.VSplit;
-					}
-					else
-					{
-						this.Cursor = Cursors.HSplit;
-					}
+					this.Cursor = (value == Orientation.Vertical) ? Cursors.VSplit : Cursors.HSplit;
 				}
 			}
 
 			public SplitterBar(Splitter splitter)
 			{
-				this.parentSplitter = splitter;
+				parentSplitter = splitter;
 				this.Cursor = Cursors.VSplit;
 			}
 
@@ -250,13 +223,14 @@ namespace MatterHackers.Agg.UI
 				if (PositionWithinLocalBounds(mouseEvent.X, mouseEvent.Y))
 				{
 					mouseDownOnBar = true;
-					DownPosition = new Vector2(mouseEvent.X, mouseEvent.Y);
-					DownPosition += OriginRelativeParent;
+					downPosition = new Vector2(mouseEvent.X, mouseEvent.Y);
+					downPosition += OriginRelativeParent;
 				}
 				else
 				{
 					mouseDownOnBar = false;
 				}
+
 				base.OnMouseDown(mouseEvent);
 			}
 
@@ -264,12 +238,12 @@ namespace MatterHackers.Agg.UI
 			{
 				if (mouseDownOnBar)
 				{
-					Vector2 mousePosition = new Vector2(mouseEvent.X, mouseEvent.Y);
+					var mousePosition = new Vector2(mouseEvent.X, mouseEvent.Y);
 					mousePosition += OriginRelativeParent;
 					double newSplitterPosition = parentSplitter.SplitterDistance;
 					if (Orientation == Orientation.Vertical)
 					{
-						double deltaX = mousePosition.X - DownPosition.X;
+						double deltaX = mousePosition.X - downPosition.X;
 						newSplitterPosition += deltaX;
 
 						if (newSplitterPosition < Parent.LocalBounds.Left + Parent.Padding.Left)
@@ -283,7 +257,7 @@ namespace MatterHackers.Agg.UI
 					}
 					else
 					{
-						double deltaY = mousePosition.Y - DownPosition.Y;
+						double deltaY = mousePosition.Y - downPosition.Y;
 						newSplitterPosition += deltaY;
 
 						if (newSplitterPosition < Parent.LocalBounds.Bottom + Parent.Padding.Bottom)
@@ -297,8 +271,9 @@ namespace MatterHackers.Agg.UI
 					}
 
 					parentSplitter.SplitterDistance = newSplitterPosition;
-					DownPosition = mousePosition;
+					downPosition = mousePosition;
 				}
+
 				base.OnMouseMove(mouseEvent);
 			}
 
