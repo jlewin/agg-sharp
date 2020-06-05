@@ -120,6 +120,10 @@
       <Project>{CD8A3D1A-24D5-4184-8CF3-7B2AD5CD7A71}</Project>
       <Name>PlatformWin32</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\PolygonMesh.Csg\PolygonMesh.Csg.csproj">
+      <Project>{1e1057f5-71eb-40cb-ae8b-269f4d764d4b}</Project>
+      <Name>PolygonMesh.Csg</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\PolygonMesh\PolygonMesh.csproj">
       <Project>{86f6aaf2-9b50-40b8-a427-1897d76471c5}</Project>
       <Name>PolygonMesh</Name>
