@@ -29,24 +29,20 @@ either expressed or implied, of the FreeBSD Project.
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using MatterHackers.Agg;
-using MatterHackers.Agg.Image;
 using MatterHackers.VectorMath;
 
 namespace MatterHackers.PolygonMesh
 {
 	public class FaceTextureData
 	{
-		public ImageBuffer image;
+		public ITextureSource image;
 		public Vector2Float uv0;
 		public Vector2Float uv1;
 		public Vector2Float uv2;
 
-		public FaceTextureData(ImageBuffer textureToUse, Vector2Float vector2Float1, Vector2Float vector2Float2, Vector2Float vector2Float3)
+		public FaceTextureData(ITextureSource textureToUse, Vector2Float vector2Float1, Vector2Float vector2Float2, Vector2Float vector2Float3)
 		{
 			this.image = textureToUse;
 			this.uv0 = vector2Float1;
@@ -406,6 +402,7 @@ namespace MatterHackers.PolygonMesh
 			return true;
 		}
 
+
 		public ulong GetLongHashCode(ulong hash = 14695981039346656037)
 		{
 			unchecked
@@ -756,14 +753,14 @@ namespace MatterHackers.PolygonMesh
 			return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
 		}
 
-		public static Matrix4X4 GetMaxPlaneProjection(this Mesh mesh, IEnumerable<int> faces, ImageBuffer textureToUse, Matrix4X4? initialTransform = null)
+		public static Matrix4X4 GetMaxPlaneProjection(this Mesh mesh, IEnumerable<int> faces, ITextureSource textureToUse, Matrix4X4? initialTransform = null)
 		{
 			// If not set than make it identity
 			var firstTransform = initialTransform == null ? Matrix4X4.Identity : (Matrix4X4)initialTransform;
 
 			var textureCoordinateMapping = Matrix4X4.CreateRotation(new Quaternion(mesh.Faces[faces.First()].normal.AsVector3(), Vector3.UnitZ));
 
-			var bounds = RectangleDouble.ZeroIntersection;
+			var bounds = AxisAlignedBoundingBox.Empty();
 
 			foreach (var face in faces)
 			{
@@ -771,12 +768,12 @@ namespace MatterHackers.PolygonMesh
 				{
 					var edgeStartPosition = mesh.Vertices[vertexIndex];
 					var textureUv = edgeStartPosition.Transform(textureCoordinateMapping);
-					bounds.ExpandToInclude(new Vector2(textureUv));
+					bounds.ExpandToInclude(new Vector3(textureUv));
 				}
 			}
 
-			var centering = Matrix4X4.CreateTranslation(new Vector3(-bounds.Left, -bounds.Bottom, 0));
-			var scaling = Matrix4X4.CreateScale(new Vector3(1 / bounds.Width, 1 / bounds.Height, 1));
+			var centering = Matrix4X4.CreateTranslation(new Vector3(-bounds.MinXYZ.X, -bounds.MinXYZ.Y, 0));
+			var scaling = Matrix4X4.CreateScale(new Vector3(1 / bounds.XSize, 1 / bounds.YSize, 1));
 
 			return textureCoordinateMapping * firstTransform * centering * scaling;
 		}
@@ -816,29 +813,29 @@ namespace MatterHackers.PolygonMesh
 		}
 
 
-		public static Matrix4X4 GetMaxPlaneProjection(this Mesh mesh, int face, ImageBuffer textureToUse, Matrix4X4? initialTransform = null)
+		public static Matrix4X4 GetMaxPlaneProjection(this Mesh mesh, int face, ITextureSource textureToUse, Matrix4X4? initialTransform = null)
 		{
 			// If not set than make it identity
 			var firstTransform = initialTransform == null ? Matrix4X4.Identity : (Matrix4X4)initialTransform;
 
 			var textureCoordinateMapping = Matrix4X4.CreateRotation(new Quaternion(mesh.Faces[face].normal.AsVector3(), Vector3.UnitZ));
 
-			var bounds = RectangleDouble.ZeroIntersection;
+			var bounds = AxisAlignedBoundingBox.Empty();
 
 			foreach (int vertexIndex in new int[] { mesh.Faces[face].v0, mesh.Faces[face].v1, mesh.Faces[face].v2 })
 			{
 				var edgeStartPosition = mesh.Vertices[vertexIndex];
 				var textureUv = edgeStartPosition.Transform(textureCoordinateMapping);
-				bounds.ExpandToInclude(new Vector2(textureUv));
+				bounds.ExpandToInclude(new Vector3(textureUv));
 			}
 
-			var centering = Matrix4X4.CreateTranslation(new Vector3(-bounds.Left, -bounds.Bottom, 0));
-			var scaling = Matrix4X4.CreateScale(new Vector3(1 / bounds.Width, 1 / bounds.Height, 1));
+			var centering = Matrix4X4.CreateTranslation(new Vector3(-bounds.MinXYZ.X, -bounds.MinXYZ.Y, 0));
+			var scaling = Matrix4X4.CreateScale(new Vector3(1 / bounds.XSize, 1 / bounds.YSize, 1));
 
 			return textureCoordinateMapping * firstTransform * centering * scaling;
 		}
 
-		public static void PlaceTextureOnFaces(this Mesh mesh, int face, ImageBuffer textureToUse)
+		public static void PlaceTextureOnFaces(this Mesh mesh, int face, ITextureSource textureToUse)
 		{
 			//// planer project along the normal of this face
 			var faces = mesh.GetCoplanerFaces(face);
@@ -848,13 +845,13 @@ namespace MatterHackers.PolygonMesh
 			}
 		}
 
-		public static void PlaceTextureOnFace(this Mesh mesh, int face, ImageBuffer textureToUse)
+		public static void PlaceTextureOnFace(this Mesh mesh, int face, ITextureSource textureToUse)
 		{
 			//// planer project along the normal of this face
 			mesh.PlaceTextureOnFace(face, textureToUse, mesh.GetMaxPlaneProjection(face, textureToUse));
 		}
 
-		public static void PlaceTextureOnFace(this Mesh mesh, int face, ImageBuffer textureToUse, Matrix4X4 textureCoordinateMapping, bool markAsChange = true)
+		public static void PlaceTextureOnFace(this Mesh mesh, int face, ITextureSource textureToUse, Matrix4X4 textureCoordinateMapping, bool markAsChange = true)
 		{
 			var faceTextures = new Dictionary<int, FaceTextureData>(mesh.FaceTextures);
 
@@ -877,7 +874,7 @@ namespace MatterHackers.PolygonMesh
 			}
 		}
 
-		public static void PlaceTextureOnFaces(this Mesh mesh, IEnumerable<int> faces, ImageBuffer textureToUse, Matrix4X4 textureCoordinateMapping)
+		public static void PlaceTextureOnFaces(this Mesh mesh, IEnumerable<int> faces, ITextureSource textureToUse, Matrix4X4 textureCoordinateMapping)
 		{
 			var faceTextures = new Dictionary<int, FaceTextureData>();
 
@@ -931,7 +928,7 @@ namespace MatterHackers.PolygonMesh
 			}
 		}
 
-		public static void RemoveTexture(this Mesh mesh, ImageBuffer texture, int index)
+		public static void RemoveTexture(this Mesh mesh, ITextureSource texture, int index)
 		{
 			for (int i = 0; i < mesh.Faces.Count; i++)
 			{
@@ -941,12 +938,12 @@ namespace MatterHackers.PolygonMesh
 			mesh.MarkAsChanged();
 		}
 
-		public static void RemoveTexture(this Mesh mesh, int faceIndex, ImageBuffer texture, int index)
+		public static void RemoveTexture(this Mesh mesh, int faceIndex, ITextureSource texture, int index)
 		{
 			mesh.FaceTextures.Remove(faceIndex);
 		}
 
-		public static void PlaceTexture(this Mesh mesh, ImageBuffer textureToUse, Matrix4X4 textureCoordinateMapping)
+		public static void PlaceTexture(this Mesh mesh, ITextureSource textureToUse, Matrix4X4 textureCoordinateMapping)
 		{
 			for (int i = 0; i < mesh.Faces.Count; i++)
 			{
@@ -956,7 +953,7 @@ namespace MatterHackers.PolygonMesh
 			mesh.MarkAsChanged();
 		}
 
-		public static Mesh TexturedPlane(ImageBuffer textureToUse, double xScale = 1, double yScale = 1)
+		public static Mesh TexturedPlane(ITextureSource textureToUse, double xScale = 1, double yScale = 1)
 		{
 			throw new NotImplementedException();
 			// Mesh texturedPlane = MeshHelper.CreatePlane(xScale, yScale);

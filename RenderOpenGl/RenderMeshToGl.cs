@@ -199,10 +199,13 @@ namespace MatterHackers.RenderOpenGl
 						GL.Enable(EnableCap.Blend);
 					}
 
-					var glPlugin = ImageGlPlugin.GetImageGlPlugin(subMesh.texture, true);
-					GL.Enable(EnableCap.Texture2D);
-					GL.BindTexture(TextureTarget.Texture2D, glPlugin.GLTextureHandle);
-					GL.EnableClientState(ArrayCap.TextureCoordArray);
+					if (subMesh.texture is ImageBuffer imageBuffer) {
+
+						var glPlugin = ImageGlPlugin.GetImageGlPlugin(imageBuffer, true);
+						GL.Enable(EnableCap.Texture2D);
+						GL.BindTexture(TextureTarget.Texture2D, glPlugin.GLTextureHandle);
+						GL.EnableClientState(ArrayCap.TextureCoordArray);
+					}
 				}
 				else
 				{
@@ -268,7 +271,7 @@ namespace MatterHackers.RenderOpenGl
 		// There can be a singleton of this because GL must always render on the UI thread and can't overlap this array
 		private static void DrawToGLZSorted(Mesh mesh, Matrix4X4 meshToViewTransform, Matrix4X4 invMeshToViewTransform)
 		{
-			ImageBuffer lastFaceTexture = null;
+			ITextureSource lastFaceTexture = null;
 
 			// var zSortedFaceList2 = mesh.GetFacesInVisibiltyOrder(meshToViewTransform);
 			var zSortedFaceList = FaceBspTree.GetFacesInVisibiltyOrder(mesh, mesh.FaceBspTree, meshToViewTransform, invMeshToViewTransform);
@@ -279,15 +282,13 @@ namespace MatterHackers.RenderOpenGl
 					continue;
 				}
 
-				FaceTextureData faceTexture;
-				mesh.FaceTextures.TryGetValue(face, out faceTexture);
-				if (faceTexture != null
+				if (mesh.FaceTextures.TryGetValue(face, out FaceTextureData faceTexture)
 					&& faceTexture.image != lastFaceTexture)
 				{
 					// Make sure the GLMeshPlugin has a reference to hold onto the image so it does not go away before this.
-					if (faceTexture != null)
+					if (faceTexture?.image is ImageBuffer imageBuffer)
 					{
-						var glPlugin = ImageGlPlugin.GetImageGlPlugin(faceTexture.image, true);
+						var glPlugin = ImageGlPlugin.GetImageGlPlugin(imageBuffer, true);
 						GL.Enable(EnableCap.Texture2D);
 						GL.BindTexture(TextureTarget.Texture2D, glPlugin.GLTextureHandle);
 					}

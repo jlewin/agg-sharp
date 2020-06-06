@@ -92,7 +92,7 @@ namespace MatterHackers.RenderOpenGl
 			removeGlDataCallBackHolder = inCallBackHolder;
 		}
 
-		public static void Remove(ImageBuffer image)
+		public static void Remove(ITextureSource image)
 		{
 			var buffer = image.GetBuffer();
 			if (imagesWithCacheData.TryGetValue(buffer, out ImageGlPlugin imagePlugin))

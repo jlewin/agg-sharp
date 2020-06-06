@@ -13,6 +13,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ImageProcessing\ImageProcessing.csproj">
     </ProjectReference>
+    <ProjectReference Include="..\..\PolygonMesh.Rendering\PolygonMesh.Rendering.csproj" />
     <ProjectReference Include="..\..\PolygonMesh\PolygonMesh.csproj">
     </ProjectReference>
     <ProjectReference Include="..\..\RayTracer\RayTracer.csproj">

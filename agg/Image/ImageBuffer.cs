@@ -24,7 +24,7 @@ using MatterHackers.VectorMath;
 
 namespace MatterHackers.Agg.Image
 {
-	public class ImageBuffer : IImageByte
+	public class ImageBuffer : IImageByte, ITextureSource
 	{
 		public const int OrderB = 0;
 		public const int OrderG = 1;
