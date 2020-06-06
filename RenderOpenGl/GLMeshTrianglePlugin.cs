@@ -71,7 +71,7 @@ namespace MatterHackers.RenderOpenGl
 
 	public class SubTriangleMesh
 	{
-		public ImageBuffer texture = null;
+		public ITextureSource texture = null;
 		public VectorPOD<VertexTextureData> textureData = new VectorPOD<VertexTextureData>();
 		public VectorPOD<VertexColorData> colorData = new VectorPOD<VertexColorData>();
 		public VectorPOD<VertexNormalData> normalData = new VectorPOD<VertexNormalData>();
@@ -130,11 +130,10 @@ namespace MatterHackers.RenderOpenGl
 			// first make sure all the textures are created
 			for (int faceIndex = 0; faceIndex < meshToBuildListFor.Faces.Count; faceIndex++)
 			{
-				FaceTextureData faceTexture;
-				meshToBuildListFor.FaceTextures.TryGetValue(faceIndex, out faceTexture);
-				if (faceTexture != null)
+				if (meshToBuildListFor.FaceTextures.TryGetValue(faceIndex, out FaceTextureData faceTexture)
+					&& faceTexture?.image is ImageBuffer imageBuffer)
 				{
-					ImageGlPlugin.GetImageGlPlugin(faceTexture.image, true);
+					ImageGlPlugin.GetImageGlPlugin(imageBuffer, true);
 				}
 
 				// don't compare the data of the texture but rather if they are just the same object
@@ -144,8 +143,8 @@ namespace MatterHackers.RenderOpenGl
 					|| (faceTexture == null 
 						&& subMeshs[subMeshs.Count - 1].texture != null))
 				{
-					SubTriangleMesh newSubMesh = new SubTriangleMesh();
-					newSubMesh.texture = faceTexture == null ? null : faceTexture.image;
+					var newSubMesh = new SubTriangleMesh();
+					newSubMesh.texture = faceTexture?.image;
 					subMeshs.Add(newSubMesh);
 					if (getColorFunc != null)
 					{
