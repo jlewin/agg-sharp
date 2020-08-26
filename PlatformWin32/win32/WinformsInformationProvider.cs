@@ -37,7 +37,7 @@ namespace MatterHackers.Agg.Platform
 	{
 		public WinformsInformationProvider()
 		{
-			this.OperatingSystem = OSType.X11;
+			this.OperatingSystem = GetOSType();
 
 			var size = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Size;
 			this.DesktopSize = new Point2D(size.Width, size.Height);
@@ -53,6 +53,22 @@ namespace MatterHackers.Agg.Platform
 			{
 				var computerInfo = new ComputerInfo();
 				return (long)computerInfo.TotalPhysicalMemory;
+			}
+		}
+
+		private OSType GetOSType()
+		{
+			if (Path.DirectorySeparatorChar == '\\')
+			{
+				return OSType.Windows;
+			}
+			else if (Environment.OSVersion.Platform == PlatformID.Unix)
+			{
+				return OSType.X11;
+			}
+			else
+			{
+				return OSType.Other;
 			}
 		}
 	}
