@@ -28,6 +28,7 @@ either expressed or implied, of the FreeBSD Project.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -50,8 +51,27 @@ namespace MatterHackers.Agg
 
 		public FileSystemStaticData()
 		{
-			string appPathAndFile = Assembly.GetExecutingAssembly().Location;
-			string pathToAppFolder = Path.GetDirectoryName(appPathAndFile);
+			var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+			var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+			string codeBase = entryAssembly.CodeBase;
+			string localPath = new Uri(codeBase).LocalPath;
+			string startupPath = Path.GetDirectoryName(localPath);
+
+			Console.WriteLine("Entry CodeBase: " + entryAssembly.CodeBase);
+			Console.WriteLine("Exe   CodeBase: " + executingAssembly.CodeBase);
+			Console.WriteLine("Entry Location: " + entryAssembly.Location);
+			Console.WriteLine("Exe   Location: " + executingAssembly.Location);
+
+			Console.WriteLine(localPath);
+			Console.WriteLine(startupPath);
+
+			foreach(DictionaryEntry e in System.Environment.GetEnvironmentVariables())
+			{
+			    Console.WriteLine(e.Key  + ":" + e.Value);
+			}
+
+			string pathToAppFolder = startupPath; //Path.GetDirectoryName(appPathAndFile);
 
 			this.basePath = Path.Combine(pathToAppFolder, "StaticData");
 
