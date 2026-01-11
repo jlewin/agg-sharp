@@ -44,7 +44,7 @@ namespace MatterHackers.Agg.UI
 
 			// NOTE: OpenTK3 will run in Windows Sandbox (no proper GL driver), but OpenTK4 won't, it seems.
 
-			var graphicsMode = new OpenTK.WinForms.GLControlSettings
+			var graphicsMode = new OpenTK.GLControl.GLControlSettings
 			{
 				Profile = OpenTK.Windowing.Common.ContextProfile.Compatability,
 #if DEBUG

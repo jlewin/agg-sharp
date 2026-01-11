@@ -29,11 +29,10 @@ using OpenTK.Graphics.ES11;
 
 using OpenTK.Graphics.OpenGL;
 using Agg;
+using OpenTK.GLControl;
 
 
-#if USE_OPENTK4
-using OpenTK.WinForms;
-#endif
+
 
 #endif
 

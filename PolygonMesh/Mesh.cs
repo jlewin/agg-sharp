@@ -341,7 +341,17 @@ namespace MatterHackers.PolygonMesh
             }
         }
 
-        public void MergeVertices(double treatAsSameDistance, double minFaceArea, Action<double, string> reporter = null)
+		public void MergeVertices(double treatAsSameDistance)
+		{
+			// Use a more forgiving tolerance - real-world meshes often have more imprecision
+			const float Epsilon = 1e-3f;
+			const float EpsilonSq = Epsilon * Epsilon;
+
+			MergeVertices(treatAsSameDistance, EpsilonSq);
+		}
+
+
+		public void MergeVertices(double treatAsSameDistance, double minFaceArea, Action<double, string> reporter = null)
         {
             if (Vertices.Count == 0)
             {
