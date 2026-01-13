@@ -54,6 +54,7 @@ namespace MatterHackers.Agg.UI
 		private int drawCount = 0;
 		private int onPaintCount;
 		private bool enableIdleProcessing;
+		private Size formSize;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public SystemWindow AggSystemWindow
@@ -87,6 +88,8 @@ namespace MatterHackers.Agg.UI
 
 		public bool IsMainWindow { get; } = false;
 
+		private AeroSnapTitleBarControls aeroSnapTitleBarControls;
+
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsInitialized { get; set; } = false;
 
@@ -106,6 +109,8 @@ namespace MatterHackers.Agg.UI
 			{
 				MainWindowsFormsWindow = this;
 				IsMainWindow = true;
+
+				aeroSnapTitleBarControls = new AeroSnapTitleBarControls(this);
 			}
 
 			this.TitleBarHeight = RectangleToScreen(ClientRectangle).Top - this.Top;
@@ -130,6 +135,9 @@ namespace MatterHackers.Agg.UI
 
 		protected override void OnClosed(EventArgs e)
 		{
+			this.AggSystemWindow.WindowStateChanged -= AggSystemWindow_WindowStateChanged;
+			this.AggSystemWindow.TitleBarMouseDown -= AggSystemWindow_TitleBarMouseDown;
+
 			if (IsMainWindow)
 			{
 				// Ensure that when the MainWindow is closed, we null the field so we can recreate the MainWindow
@@ -295,6 +303,56 @@ namespace MatterHackers.Agg.UI
 		}
 
 		private bool winformAlreadyClosing = false;
+
+		protected override void OnLoad(EventArgs e)
+		{
+			this.AggSystemWindow.WindowStateChanged += AggSystemWindow_WindowStateChanged;
+			this.AggSystemWindow.TitleBarMouseDown += AggSystemWindow_TitleBarMouseDown;
+
+			base.OnLoad(e);
+		}
+
+		public void ToggleMaximize()
+		{
+			if (this.WindowState == FormWindowState.Normal)
+			{
+				formSize = this.ClientSize;
+				this.AggSystemWindow.WindowState = SystemWindow.AppWindowState.Maximized;
+			}
+			else
+			{
+				this.AggSystemWindow.WindowState = SystemWindow.AppWindowState.Normal;
+				this.Size = formSize;
+			}
+
+
+			this.Focus();
+			// Ensure focus is set to the new window
+			AggSystemWindow.Focus();
+		}
+
+		private void AggSystemWindow_TitleBarMouseDown(object sender, EventArgs e)
+		{
+			aeroSnapTitleBarControls.AeroSnapTitleBar();
+		}
+
+		private void AggSystemWindow_WindowStateChanged(object sender, SystemWindow.AppWindowState e)
+		{
+			switch (e)
+			{
+				case SystemWindow.AppWindowState.Maximized:
+					this.WindowState = FormWindowState.Maximized;
+					break;
+				case SystemWindow.AppWindowState.Minimized:
+					this.WindowState = FormWindowState.Minimized;
+					break;
+				case SystemWindow.AppWindowState.Normal:
+					this.WindowState = FormWindowState.Normal;
+					break;
+			}
+
+			this.AggSystemWindow.Invalidate();
+		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
 		{

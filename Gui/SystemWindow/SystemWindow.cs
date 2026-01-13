@@ -226,7 +226,43 @@ namespace MatterHackers.Agg.UI
 			DebugLogger.LogMessage("SystemWindow", $"systemWindowProvider.ShowSystemWindow completed - PlatformWindow null: {PlatformWindow == null}");
 		}
 
-		public virtual bool Maximized { get; set; } = false;
+		public virtual bool Maximized 
+		{ 
+			get => WindowState == AppWindowState.Maximized;
+			set 
+			{
+				WindowState = value ? AppWindowState.Maximized : AppWindowState.Normal;
+			}
+		}
+
+		public enum AppWindowState 
+		{
+			Normal,
+			Maximized,
+			Minimized,
+		}
+
+		private AppWindowState _windowState = AppWindowState.Normal;
+				
+		public AppWindowState WindowState
+		{
+			get => _windowState;
+			set {
+				if (_windowState != value)
+				{
+                    _windowState = value;
+                    OnWindowStateChanged(value);
+				}
+				
+			}
+		}
+
+		public event EventHandler<AppWindowState> WindowStateChanged;
+
+		public virtual void OnWindowStateChanged(AppWindowState newState)
+		{
+			WindowStateChanged?.Invoke(this, newState);
+		}
 
 		public Point2D InitialDesktopPosition { get; set; } = new Point2D(-1, -1);
 
@@ -284,6 +320,13 @@ namespace MatterHackers.Agg.UI
 		public override void Invalidate(RectangleDouble rectToInvalidate)
 		{
 			PlatformWindow?.Invalidate(LocalBounds);
+		}
+
+		public event EventHandler TitleBarMouseDown;
+
+		public virtual void MouseDownOnTitlebar()
+		{
+			TitleBarMouseDown?.Invoke(this, EventArgs.Empty);
 		}
 
 		// TODO: This should become private... Callers should interact with SystemWindow proxies

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2022, Lars Brubaker, John Lewin
+Copyright (c) 2026, Lars Brubaker, John Lewin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,57 +27,31 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
 
-using System.Collections.Generic;
 using System.IO;
 using MatterHackers.Agg.SvgTools;
 using MatterHackers.Agg.Image;
-using MatterHackers.Agg.Transform;
 using MatterHackers.VectorMath;
 
 namespace MatterHackers.Agg.UI
 {
-    public class SvgWidget : GuiWidget
+	public class SvgWidget : GuiWidget
 	{
-		List<ColoredVertexSource> items = new List<ColoredVertexSource>();
-
 		private ImageBuffer imageBuffer;
 
-		public double Scale { get; set; } = 0.7;
-
-        public SvgWidget()
+		public SvgWidget(Stream stream, double scale, int width = -1, int height = -1)
 		{
+			imageBuffer = SvgParser.LoadImage(stream, scale, width, height);
+			this.MinimumSize = new Vector2(imageBuffer.Width, imageBuffer.Height);
 		}
 
-        public SvgWidget(string filePath, double scale, int width = -1, int height = -1)
+		public ImageBuffer ImageBuffer
 		{
-			using (var stream = File.OpenRead(filePath))
+			get => imageBuffer;
+			set
 			{
-				LoadSvg(stream, scale, width, height);
+				imageBuffer = value;
+				this.MinimumSize = new Vector2(imageBuffer.Width, imageBuffer.Height);
 			}
-		}
-
-		public void LoadSvg(Stream stream, double scale, int width = -1, int height = -1)
-		{
-			items = SvgParser.Parse(stream, false);
-
-			this.Scale = scale;
-
-			width = (int)(width * this.Scale);
-			height = (int)(height * this.Scale);
-
-			imageBuffer = new ImageBuffer(width, height);
-
-			this.MinimumSize = new Vector2(width, height);
-
-			var graphics2D = imageBuffer.NewGraphics2D();
-
-			graphics2D.SetTransform(Affine.NewScaling(this.Scale));
-			foreach (var item in items)
-			{
-				graphics2D.Render(item.VertexSource, item.Color);
-			}
-
-			imageBuffer.FlipY();
 		}
 
 		public override void OnDraw(Graphics2D graphics2D)
@@ -88,3 +62,4 @@ namespace MatterHackers.Agg.UI
 		}
 	}
 }
+

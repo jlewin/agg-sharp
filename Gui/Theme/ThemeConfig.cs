@@ -29,8 +29,10 @@ either expressed or implied, of the FreeBSD Project.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using MatterHackers.Agg.Image;
 using MatterHackers.Agg.Platform;
+using MatterHackers.Agg.SvgTools;
 using MatterHackers.ImageProcessing;
 using MatterHackers.Localizations;
 using MatterHackers.VectorMath;
@@ -157,6 +159,44 @@ namespace MatterHackers.Agg.UI
             //}
         }
 
+        public ImageBuffer LoadSvgImage(string assetPath, double scale, int width = -1, int height = -1)
+        {
+            using (var imageStream = StaticData.Instance.OpenStream(assetPath))
+            {
+                return SvgParser.LoadImage(imageStream, scale, width, height);
+            }
+        }
+
+        public ThemedButton CreateSystemActionButton(string name, string tooltip, string iconKey)
+        {
+            double svgScale = 1.65;
+            int svgSize = 16;
+            double buttonHeight = 54;
+            double buttonWidth = 88;
+
+            using (var iconStream = StaticData.Instance.OpenStream(Path.Combine("Icons", $"codicon--chrome-{iconKey}.svg")))
+            {
+                var svgWidget = new SvgWidget(iconStream, svgScale, svgSize, svgSize)
+                {
+                    Selectable = false,
+                    VAnchor = VAnchor.Center,
+                    HAnchor = HAnchor.Center,
+                };
+
+                var button = new ThemedButton(this)
+                {
+                    Name = name,
+                    ToolTipText = tooltip,
+                    Margin = new BorderDouble(left: 2),
+                    Width = buttonWidth,
+                    Height = buttonHeight,
+                };
+
+                button.AddChild(svgWidget);
+
+                return button;
+            }
+        }
 
         public double ButtonRadius { get; set; } = 3;
 

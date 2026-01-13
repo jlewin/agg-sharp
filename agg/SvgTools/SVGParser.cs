@@ -16,6 +16,7 @@
 //
 //----------------------------------------------------------------------------
 using HtmlAgilityPack;
+using MatterHackers.Agg.Image;
 using MatterHackers.Agg.Transform;
 using MatterHackers.Agg.VertexSource;
 using MatterHackers.VectorMath;
@@ -658,6 +659,28 @@ namespace MatterHackers.Agg.SvgTools
 
                 lastPosition = vertexData;
             }
+        }
+
+        public static ImageBuffer LoadImage(Stream stream, double scale, int width = -1, int height = -1)
+        {
+            var items = Parse(stream, false);
+
+            width = (int)(width * scale);
+            height = (int)(height * scale);
+
+            var buffer = new ImageBuffer(width, height);
+            var graphics2D = buffer.NewGraphics2D();
+
+            graphics2D.SetTransform(Affine.NewScaling(scale));
+
+            foreach (var item in items)
+            {
+                graphics2D.Render(item.VertexSource, item.Color);
+            }
+
+            buffer.FlipY();
+
+            return buffer;
         }
 
         private static Vector2 Reflect(Vector2 point, Vector2 mirror)

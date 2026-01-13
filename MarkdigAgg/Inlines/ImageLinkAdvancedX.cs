@@ -75,13 +75,12 @@ namespace Markdig.Renderers.Agg.Inlines
 									// Load svg into SvgWidget, swap for ImageWidget
 									try
 									{
-										var svgWidget = new SvgWidget()
+										var svgWidget = new SvgWidget(streamTask.Result, 1)
 										{
 											Border = 1,
 											BorderColor = Color.YellowGreen
 										};
 
-										svgWidget.LoadSvg(streamTask.Result, 1);
 
                                         this.ReplaceChild(imageWidget, svgWidget);
 									}
