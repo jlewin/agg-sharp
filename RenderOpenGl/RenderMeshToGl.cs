@@ -44,6 +44,7 @@ namespace MatterHackers.RenderOpenGl
 		NonManifold,
 		Polygons,
 		Overhang,
+		Materials,
 		Wireframe
 	}
 
@@ -166,6 +167,7 @@ namespace MatterHackers.RenderOpenGl
 						break;
 
 					case RenderTypes.Shaded:
+					case RenderTypes.Materials:
 						DrawToGL(meshToRender, color.Alpha0To1 < 1, meshToViewTransform, blendTexture, allowBspRendering);
 						break;
 				}
