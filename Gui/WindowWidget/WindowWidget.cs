@@ -77,7 +77,6 @@ namespace MatterHackers.Agg.UI
 			};
 			windowBackground.AddChild(TitleBar);
 
-            windowBackground.AddChild(new HorizontalLine(theme.PrimaryAccentColor));
 
             MinimumSize = new Vector2(deviceGrabWidth * 8, deviceGrabWidth * 4 + TitleBar.Height * 2);
 			WindowBorder = 1;
@@ -122,7 +121,7 @@ namespace MatterHackers.Agg.UI
                 VAnchor = VAnchor.Fit | VAnchor.Center,
             };
 
-            titleBarRow.AddChild(new ImageWidget(StaticData.Instance.LoadIcon("mh.png", 16, 16).GrayToColor(theme.TextColor))
+            titleBarRow.AddChild(new ImageWidget(StaticData.Instance.LoadIcon("app.png", 16, 16).GrayToColor(theme.TextColor))
             {
                 Margin = new BorderDouble(4, 0, 6, 0),
                 VAnchor = VAnchor.Center
