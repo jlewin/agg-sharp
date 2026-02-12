@@ -459,6 +459,16 @@ namespace MatterHackers.Agg.UI
             return CreateDialogButton(text, new Color(Color.White, 15), new Color(Color.White, 25));
         }
 
+        public GuiWidget CreateIconButton(ImageBuffer image)
+        {
+            return new ThemedIconButton(image, this);
+        }
+
+        public GuiWidget CreateIconButton(string text, ImageBuffer image)
+        {
+            return new ThemedTextIconButton(text, image, this);
+        }
+
         public ThemedTextButton CreateDialogButton(string text)
         {
             return CreateDialogButton(text, SlightShade, SlightShade.WithAlpha(75));
@@ -540,6 +550,11 @@ namespace MatterHackers.Agg.UI
         {
             widget.BorderColor = shadedBorder ? MinimalShade : BorderColor20;
             widget.Border = border;
+        }
+
+        public ImageBuffer LoadIcon(params string[] paths)
+        {
+            return StaticData.Instance.LoadIcon(Path.Combine(paths) , 16, 16).GrayToColor(this.TextColor);
         }
     }
 
