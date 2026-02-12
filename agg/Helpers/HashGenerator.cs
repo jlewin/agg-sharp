@@ -29,6 +29,9 @@ either expressed or implied, of the FreeBSD Project.
 
 using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Unicode;
 
 namespace MatterHackers.Agg
 {
@@ -48,6 +51,16 @@ namespace MatterHackers.Agg
 			using (var stream = new BufferedStream(File.OpenRead(filePath), 1<<16))
 			{
 				return HashGenerator.ComputeSHA1(stream);
+			}
+		}
+
+		public static string ComputeSHA1(string text)
+		{
+			using (var sha1 = System.Security.Cryptography.SHA1.Create())
+			{
+				byte[] buffer = Encoding.UTF8.GetBytes(text);
+				byte[] hash = sha1.ComputeHash(buffer);
+				return BitConverter.ToString(hash).Replace("-", string.Empty);
 			}
 		}
 	}
