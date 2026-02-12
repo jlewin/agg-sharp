@@ -187,6 +187,8 @@ namespace MatterHackers.Agg.UI
                     HAnchor = HAnchor.Center,
                 };
 
+                svgWidget.ImageBuffer = svgWidget.ImageBuffer.GrayToColor(TextColor);
+
                 var button = new ThemedButton(this)
                 {
                     Name = name,
