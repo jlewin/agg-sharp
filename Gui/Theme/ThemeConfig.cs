@@ -43,6 +43,10 @@ namespace MatterHackers.Agg.UI
     {
         public ImageBuffer RestoreNormal { get; private set; }
         public ImageBuffer RestoreHover { get; private set; }
+        public ImageBuffer LibraryFolder { get; set; }
+        public ImageBuffer LibraryFile { get; set; }
+		public ImageBuffer TreeIcon { get; set; }
+		public ImageBuffer GeneratingThumbnailIcon { get; set; }
 
         public Color SlightShade { get; set; } = new Color("#00000028");
         public Color MinimalShade { get; set; } = new Color("#0000000F");
@@ -329,8 +333,6 @@ namespace MatterHackers.Agg.UI
         public Color AccentMimimalOverlay { get; set; }
 
         public BorderDouble SeparatorMargin { get; }
-
-        public ImageBuffer GeneratingThumbnailIcon { get; set; }
 
         public class StateColor
         {
