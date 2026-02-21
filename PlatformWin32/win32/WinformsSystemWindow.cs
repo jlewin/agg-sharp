@@ -42,7 +42,7 @@ namespace MatterHackers.Agg.UI
 
 		public static Func<SystemWindow, FormInspector> InspectorCreator { get; set; }
 
-		private static System.Timers.Timer idleCallBackTimer = null;
+		private static System.Windows.Forms.Timer idleCallBackTimer = null;
 
 		private static bool processingOnIdle = false;
 
@@ -97,10 +97,11 @@ namespace MatterHackers.Agg.UI
 		{
 			if (idleCallBackTimer == null)
 			{
-				idleCallBackTimer = new System.Timers.Timer();
+
+				idleCallBackTimer = new System.Windows.Forms.Timer();
 				// call up to 100 times a second
 				idleCallBackTimer.Interval = 10;
-				idleCallBackTimer.Elapsed += InvokePendingOnIdleActions;
+				idleCallBackTimer.Tick += InvokePendingOnIdleActions;
 				idleCallBackTimer.Start();
 			}
 
@@ -157,7 +158,7 @@ namespace MatterHackers.Agg.UI
 			}
 		}
 
-		private void InvokePendingOnIdleActions(object sender, ElapsedEventArgs e)
+		private void InvokePendingOnIdleActions(object sender, EventArgs e)
 		{
 			if (!this.IsDisposed)
 			{
@@ -182,14 +183,7 @@ namespace MatterHackers.Agg.UI
 
 				try
 				{
-					if (InvokeRequired)
-					{
-						Invoke(new Action(UiThread.InvokePendingActions));
-					}
-					else
-					{
-						UiThread.InvokePendingActions();
-					}
+					UiThread.InvokePendingActions();
 				}
 				catch (Exception ex)
 				{
@@ -371,7 +365,7 @@ namespace MatterHackers.Agg.UI
 					// Stop the RunOnIdle timer/pump
 					if (this.IsMainWindow)
 					{
-						idleCallBackTimer.Elapsed -= InvokePendingOnIdleActions;
+						idleCallBackTimer.Tick -= InvokePendingOnIdleActions;
 						idleCallBackTimer.Stop();
 
 						// Workaround for "Cannot access disposed object." exception
@@ -393,7 +387,7 @@ namespace MatterHackers.Agg.UI
 			base.OnClosing(e);
 		}
 
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ISystemWindowProvider WindowProvider { get; set; }
 
 		public new virtual Keys ModifierKeys => (Keys)Control.ModifierKeys;
@@ -629,16 +623,16 @@ namespace MatterHackers.Agg.UI
 			DebugLogger.EnableFilter("WinformsSystemWindow");
 			DebugLogger.LogMessage("WinformsSystemWindow", $"ResetFirstWindowFlag called - Current firstWindow: {firstWindow}");
 			firstWindow = true;
-			
+
 			// Reset all other static state for clean test isolation
 			DebugLogger.LogMessage("WinformsSystemWindow", "Resetting WinForms static state");
-			
+
 			// Reset main window reference
 			MainWindowsFormsWindow = null;
-			
+
 			// Reset idle processing state
 			processingOnIdle = false;
-			
+
 			// Reset and recreate idle timer to ensure clean state
 			if (idleCallBackTimer != null)
 			{
@@ -646,7 +640,7 @@ namespace MatterHackers.Agg.UI
 				idleCallBackTimer.Dispose();
 				idleCallBackTimer = null;
 			}
-			
+
 			DebugLogger.LogMessage("WinformsSystemWindow", "WinForms static state reset completed");
 		}
 
@@ -654,9 +648,9 @@ namespace MatterHackers.Agg.UI
 		{
 			DebugLogger.EnableFilter("WinformsSystemWindow");
 			DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow ENTRY");
-			
+
 			DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow STEP 1");
-			
+
 			// If ShowSystemWindow is called on loaded/visible SystemWindow, call BringToFront and exit
 			if (systemWindow.PlatformWindow == this
 				&& !SingleWindowMode)
@@ -667,20 +661,20 @@ namespace MatterHackers.Agg.UI
 			}
 
 			DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow STEP 2");
-			
+
 			// Set the active SystemWindow & PlatformWindow references
 			this.AggSystemWindow = systemWindow;
 			systemWindow.PlatformWindow = this;
 
 			DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow STEP 3");
-			
+
 			systemWindow.AnchorAll();
 
 			DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow STEP 4");
 
 			// If this isn't true, prepare for deadlocks.
 			//System.Diagnostics.Debug.Assert(SynchronizationContext.Current == null || SynchronizationContext.Current is WindowsFormsSynchronizationContext);
-            
+
 			if (firstWindow)
 			{
 				DebugLogger.LogMessage("WinformsSystemWindow", "First window - starting Application.Run message loop");
@@ -695,7 +689,7 @@ namespace MatterHackers.Agg.UI
 				{
 					enableIdleProcessing = true;
 				}
-				
+
 				DebugLogger.LogMessage("WinformsSystemWindow", "ShowSystemWindow STEP 7 - About to call Application.Run()");
 				Application.Run(this);
 				DebugLogger.LogMessage("WinformsSystemWindow", "Application.Run completed - message loop exited");
