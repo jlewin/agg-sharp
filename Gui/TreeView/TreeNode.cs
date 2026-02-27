@@ -48,7 +48,7 @@ namespace MatterHackers.Agg.UI
         private bool _expanded;
         private TreeView _treeView;
         private bool isDirty;
-        private ThemeConfig theme;
+        protected ThemeConfig theme;
 
         public TreeNode(ThemeConfig theme, bool useIcon = true, TreeNode nodeParent = null)
             : base(FlowDirection.TopToBottom)
@@ -247,10 +247,13 @@ namespace MatterHackers.Agg.UI
                 if (_expanded != value || content.Visible != value)
                 {
                     _expanded = value;
+
+                    // Set Visible before setting Expanded, to prevent recurse
+                    content.Visible = _expanded && this.Nodes.Count > 0;
+
                     expandWidget.Expanded = _expanded;
 
-                    content.Visible = _expanded && this.Nodes.Count > 0;
-                    ExpandedChanged?.Invoke(this, null);
+                    OnExpandedChanged(EventArgs.Empty);
                 }
             }
         }
@@ -401,7 +404,7 @@ namespace MatterHackers.Agg.UI
             while (treeNodes.Any())
             {
                 TreeNode treeNode = treeNodes.Pop();
-                
+
                 foreach (var childNode in treeNode.Nodes)
                 {
                     treeNodes.Push(childNode);
@@ -428,7 +431,7 @@ namespace MatterHackers.Agg.UI
             {
                 return this;
             }
-            
+
             foreach (var node in this.Nodes)
             {
                 var foundNode = node.FindNodeKey(nodeKey);
@@ -627,6 +630,11 @@ namespace MatterHackers.Agg.UI
         private void OnImageChanged(EventArgs args)
         {
             ImageChanged?.Invoke(this, null);
+        }
+
+        protected virtual void OnExpandedChanged(EventArgs e)
+        {
+            ExpandedChanged?.Invoke(this, e);
         }
 
         private void RebuildContentSection()
